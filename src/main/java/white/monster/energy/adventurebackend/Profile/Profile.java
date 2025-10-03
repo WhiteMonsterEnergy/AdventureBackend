@@ -16,14 +16,14 @@ public class Profile
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-private int Id;
-private String Name;
-private String Password;
+private int id;
+private String name;
+private String password;
 
-public Profile(int profileId, String profileName, String profilePassword) {
-    this.Id = profileId;
-    this.Name = profileName;
-    this.Password = profilePassword;
+public Profile(int id, String name, String password) {
+    this.id = id;
+    this.name = name;
+    this.password = password;
 }
 public Profile () {
 
