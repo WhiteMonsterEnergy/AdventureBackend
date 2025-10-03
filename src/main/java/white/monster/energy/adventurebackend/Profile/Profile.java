@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
 @Getter
 @Setter
 @Entity
 public class Profile
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
 private int Id;
 private String Name;
 private String Password;
