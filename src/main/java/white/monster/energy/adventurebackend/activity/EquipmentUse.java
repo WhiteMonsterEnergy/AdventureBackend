@@ -11,19 +11,22 @@ import white.monster.energy.adventurebackend.equipment.Equipment;
 @Entity
 public class EquipmentUse {
 
+    // Primary key autoincrement generation for EquipmentUse
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int equipmentId; //Foreign key
-    private int activityId; //Foreign key
     private int visitorsToEach;
 
+    // Many-to-one relationship to Activity
     @ManyToOne
-    @JoinColumn(name = "activityId", referencedColumnName = "id")
+    @JoinColumn(name = "activity_id")
+    @JsonBackReference
     private Activity activity;
 
+    // Many-to-one relationship to Equipment
     @ManyToOne
-    @JoinColumn(name = "equipmentId", referencedColumnName = "id")
+    @JoinColumn(name = "equipment_id")
+    @JsonBackReference
     private Equipment equipment;
 
 

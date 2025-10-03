@@ -1,5 +1,6 @@
 package white.monster.energy.adventurebackend.equipment;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Entity
 public class Equipment {
 
+    // Primary key autoincrement generation for Equipment
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -20,7 +22,8 @@ public class Equipment {
     private int broken;
     private double cost;
 
+    // One-to-many relationship to EquipmentUse
     @OneToMany
-    @JoinColumn(name = "id", referencedColumnName = "equipmentId")
-    private Set<EquipmentUse> relatedActivities;
+    @JsonManagedReference
+    private Set<EquipmentUse> equipmentUseSet;
 }

@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-
-
 import java.util.Set;
 
 @Getter
@@ -14,6 +11,7 @@ import java.util.Set;
 @Entity
 public class Activity {
 
+    // Primary key autoincrement generation for Activity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -25,7 +23,8 @@ public class Activity {
     private int minimumMinutes;
     private int fixedTime;
 
-    @OneToMany(mappedBy = "activity")
+    // One-to-many relationship to EquipmentUse
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private Set<EquipmentUse> equipmentUseSet;
 
