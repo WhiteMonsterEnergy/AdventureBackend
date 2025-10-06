@@ -10,11 +10,11 @@ import java.util.Optional;
 @Service
 public class ActivityService {
 
-    private final IActivityRepository activityRepository;
+    private final IActivityRepository iActivityRepository;
 
     // Constructor injection of the repository
-    public ActivityService(IActivityRepository activityRepository) {
-        this.activityRepository = activityRepository;
+    public ActivityService(IActivityRepository iActivityRepository) {
+        this.iActivityRepository = iActivityRepository;
     }
 
     // Creates a new Activity after validating and checking for duplicates.
@@ -32,28 +32,28 @@ public class ActivityService {
         }
 
         // 2. Check for duplicate title
-        if (activityRepository.findByTitle(activity.getTitle()).isPresent()) {
+        if (iActivityRepository.findByTitle(activity.getTitle()).isPresent()) {
             throw new IllegalStateException("Activity with this title already exists");
         }
 
         // 3. Save and return
-        return activityRepository.save(activity);
+        return iActivityRepository.save(activity);
     }
 
     // Returns a list of all activities.
     public List<Activity> getAllActivities() {
-        return activityRepository.findAll();
+        return iActivityRepository.findAll();
     }
 
     // Returns an activity by ID, or Optional.empty() if not found.
     public Optional<Activity> getActivityById(int id) {
-        return activityRepository.findById(id);
+        return iActivityRepository.findById(id);
     }
 
     // Updates an existing activity by ID with new data.
     @Transactional
     public Activity updateActivity(int id, Activity updatedActivity) {
-        Activity existing = activityRepository.findById(id)
+        Activity existing = iActivityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found"));
 
         // Validate updated fields
@@ -68,7 +68,7 @@ public class ActivityService {
         }
 
         // Check if updating title causes a duplicate
-        Optional<Activity> duplicate = activityRepository.findByTitle(updatedActivity.getTitle());
+        Optional<Activity> duplicate = iActivityRepository.findByTitle(updatedActivity.getTitle());
         if (duplicate.isPresent() && duplicate.get().getId() != id) {
             throw new IllegalStateException("Another activity with this title already exists");
         }
@@ -82,14 +82,14 @@ public class ActivityService {
         existing.setMinimumMinutes(updatedActivity.getMinimumMinutes());
         existing.setFixedTime(updatedActivity.getFixedTime());
 
-        return activityRepository.save(existing);
+        return iActivityRepository.save(existing);
     }
 
     // Deletes an activity by ID and returns true if deleted, false if not found.
     @Transactional
     public boolean deleteActivity(int id) {
-        if (activityRepository.existsById(id)) {
-            activityRepository.deleteById(id);
+        if (iActivityRepository.existsById(id)) {
+            iActivityRepository.deleteById(id);
             return true;
         }
         return false;
