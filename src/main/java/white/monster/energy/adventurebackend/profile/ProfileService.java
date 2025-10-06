@@ -1,8 +1,6 @@
-package white.monster.energy.adventurebackend.Profile;
+package white.monster.energy.adventurebackend.profile;
 
 
-import white.monster.energy.adventurebackend.Profile.Profile;
-import white.monster.energy.adventurebackend.Profile.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

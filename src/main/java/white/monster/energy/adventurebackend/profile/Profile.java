@@ -1,4 +1,4 @@
-package white.monster.energy.adventurebackend.Profile;
+package white.monster.energy.adventurebackend.profile;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

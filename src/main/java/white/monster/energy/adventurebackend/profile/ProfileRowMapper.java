@@ -1,10 +1,9 @@
-package white.monster.energy.adventurebackend.Profile;
+package white.monster.energy.adventurebackend.profile;
 
 
 import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import white.monster.energy.adventurebackend.Profile.Profile;
 
 
 public class ProfileRowMapper implements RowMapper<Profile> {

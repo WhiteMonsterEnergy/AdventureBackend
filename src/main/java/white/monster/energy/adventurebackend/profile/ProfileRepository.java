@@ -1,8 +1,7 @@
-package white.monster.energy.adventurebackend.Profile;
+package white.monster.energy.adventurebackend.profile;
 
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import white.monster.energy.adventurebackend.Profile.ProfileRowMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

@@ -1,4 +1,4 @@
-package white.monster.energy.adventurebackend.Profile;
+package white.monster.energy.adventurebackend.profile;
 
 public class ProfileController {
 
