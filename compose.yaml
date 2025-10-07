@@ -1,0 +1,39 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: database
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: kea
+      MYSQL_DATABASE: kea
+      MYSQL_USER: kea
+      MYSQL_PASSWORD: kea
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+    ports:
+      - "127.0.0.1:8082:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=mysql
+      - DB_DRIVER=com.mysql.cj.jdbc.Driver
+      - dbUrl=jdbc:mysql://mysql:3306/kea
+      - dbUsername=kea
+      - dbPassword=kea
+    depends_on:
+      - mysql
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ..\AdventureFrontend
+    ports:
+      - "127.0.0.1:8080:8080"
+
+volumes:
+  mysql_data:
