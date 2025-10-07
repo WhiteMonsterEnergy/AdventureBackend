@@ -30,8 +30,8 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public List<Booking> listByCustomer(Long customerId) {
-        return bookingRepository.findByCustomerId(customerId);
+    public List<Booking> listByCustomer(Long visitorId) {
+        return bookingRepository.findByVisitorId(visitorId);
     }
 
     @Transactional
@@ -58,12 +58,5 @@ public class BookingService {
         b.setStatus("HOLD");
         b.setHoldExpiresAt(expiresAt);
         return bookingRepository.save(b);
-    }
-
-    @Transactional(readOnly = true)
-    public boolean overlaps(LocalDateTime start, LocalDateTime end) {
-        return !bookingRepository
-                .findByStartTimeLessThanEqualAndEndTimeGreaterThanEqual(end, start)
-                .isEmpty();
     }
 }
