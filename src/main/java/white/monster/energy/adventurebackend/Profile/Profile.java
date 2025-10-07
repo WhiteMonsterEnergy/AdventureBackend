@@ -19,11 +19,13 @@ public class Profile
 private int id;
 private String name;
 private String password;
+private ProfileType type;
 
-public Profile(int id, String name, String password) {
+public Profile(int id, String name, String password, ProfileType type) {
     this.id = id;
     this.name = name;
     this.password = password;
+    this.type = type;
 }
 public Profile () {
 
