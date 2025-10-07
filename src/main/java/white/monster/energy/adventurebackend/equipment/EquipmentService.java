@@ -20,7 +20,6 @@ public class EquipmentService {
     // Creates a new Equipment after validating and checking for duplicates.
     @Transactional
     public Equipment createEquipment(Equipment equipment) {
-        // 1. Validate required fields
         if (equipment.getTitle() == null || equipment.getTitle().isBlank()) {
             throw new IllegalArgumentException("Equipment must have a title");
         }
@@ -34,12 +33,10 @@ public class EquipmentService {
             throw new IllegalArgumentException("Equipment cost must be positive");
         }
 
-        // 2. Check for duplicate title
         if (iEquipmentRepository.findByTitle(equipment.getTitle()).isPresent()) {
             throw new IllegalStateException("Equipment with this title already exists");
         }
 
-        // 3. Save and return
         return iEquipmentRepository.save(equipment);
     }
 
@@ -59,7 +56,6 @@ public class EquipmentService {
         Equipment existing = iEquipmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Equipment not found"));
 
-        // Validate updated fields
         if (updatedEquipment.getTitle() == null || updatedEquipment.getTitle().isBlank()) {
             throw new IllegalArgumentException("Equipment must have a title");
         }
@@ -73,13 +69,11 @@ public class EquipmentService {
             throw new IllegalArgumentException("Equipment cost must be positive");
         }
 
-        // Check if updating title causes a duplicate
         Optional<Equipment> duplicate = iEquipmentRepository.findByTitle(updatedEquipment.getTitle());
         if (duplicate.isPresent() && duplicate.get().getId() != id) {
             throw new IllegalStateException("Another equipment with this title already exists");
         }
 
-        // Apply updates
         existing.setTitle(updatedEquipment.getTitle());
         existing.setAmount(updatedEquipment.getAmount());
         existing.setBroken(updatedEquipment.getBroken());
@@ -96,5 +90,15 @@ public class EquipmentService {
             return true;
         }
         return false;
+    }
+
+    // Finds all equipment with broken count greater than specified value.
+    public List<Equipment> getEquipmentWithBrokenCountGreaterThan(int brokenCount) {
+        return iEquipmentRepository.findByBrokenGreaterThan(brokenCount);
+    }
+
+    // Finds all equipment with amount less than or equal to specified value.
+    public List<Equipment> getEquipmentWithLowStock(int amountThreshold) {
+        return iEquipmentRepository.findByAmountLessThanEqual(amountThreshold);
     }
 }
