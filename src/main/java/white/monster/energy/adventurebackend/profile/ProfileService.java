@@ -13,7 +13,7 @@ public class ProfileService {
     @Autowired
     private ProfileRepository profileRepository;
 
-    public void addProfile(Profile profile) {profileRepository.addProfile(profile);
+    public void createProfile(Profile profile) {profileRepository.addProfile(profile);
     }
 
 public List<Profile> getAllProfiles() {
