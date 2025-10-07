@@ -7,22 +7,18 @@ import org.springframework.data.repository.query.Param;
 
 import jakarta.persistence.LockModeType;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
 
-    /* ---------- Basic finders ---------- */
 
-    List<Booking> findByCustomerId(Long customerId);
+    List<Booking> findByVisitorId(Long visitorId);
 
     Page<Booking> findByStatusIn(Collection<String> statuses, Pageable pageable);
 
     Page<Booking> findByStartTimeBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);
 
-    /* ---------- Overlap / availability helpers ---------- */
-    // Overlap condition: (start < :end) AND (end > :start)
+
     @Query("""
            SELECT b FROM Booking b
            WHERE b.startTime < :end
@@ -45,9 +41,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
             @Param("statuses") Collection<String> statuses
     );
 
-    /* ---------- Holds management ---------- */
-
-    // Find HOLD reservations that expired (to be released by a scheduler/cron in the service)
     @Query("""
            SELECT b FROM Booking b
            WHERE b.status = 'HOLD'
@@ -56,7 +49,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
            """)
     List<Booking> findExpiredHolds(@Param("now") LocalDateTime now);
 
-    // Optional: bulk release holds (prefer doing per-entity updates in service to trigger @Version)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
            UPDATE Booking b
@@ -68,10 +60,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
            """)
     int releaseExpiredHolds(@Param("now") LocalDateTime now);
 
-    /* ---------- Locking for safe state transitions ---------- */
 
-    // Use when confirming/cancelling to avoid race conditions.
-    // Wrap call in a @Transactional service method.
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT b FROM Booking b WHERE b.id = :id")
     Optional<Booking> findByIdForUpdate(@Param("id") Long id);
