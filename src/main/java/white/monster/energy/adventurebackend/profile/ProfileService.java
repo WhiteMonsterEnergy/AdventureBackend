@@ -1,45 +1,49 @@
 package white.monster.energy.adventurebackend.profile;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
 public class ProfileService {
 
-    @Autowired
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
 
-    public void createProfile(Profile profile) {profileRepository.addProfile(profile);
+    public ProfileService(ProfileRepository profileRepository) {
+        this.profileRepository = profileRepository;
     }
+public Profile createProfile(Profile profile) {
+        return profileRepository.save(profile);
+}
 
 public List<Profile> getAllProfiles() {
-        return profileRepository.getAllProfiles();
+        return profileRepository.findAll();
 }
 
 public void deleteProfileById(int id) {
-profileRepository.deleteProfileById(id);
+        profileRepository.deleteById(id);
 }
 
-public void updateProfile(Profile profile) {
-profileRepository.updateProfile(profile);
+public Profile updateProfile(Profile profile) {
+        return profileRepository.save(profile);
 }
 
 public Profile getProfileById(int id) {
-        return profileRepository.getProfileById(id);
+        return profileRepository.findById(id).orElse(null);
 }
 
 public Profile authenticateAndGetProfile(String name, String password) {
-Profile profile = profileRepository.getProfileByName(name);
-if (profile != null && profile.getPassword().equals(password)) {
-    return profile;
+        Optional<Profile> optionalProfile = profileRepository.findByName(name);
+        if (optionalProfile.isPresent()) {
+            Profile profile = optionalProfile.get();
+            if (profile.getPassword().equals(password)) {
+                return profile;
+            }
+        }
+        return null;
 }
-return null;
 
 }
 
-
-}
