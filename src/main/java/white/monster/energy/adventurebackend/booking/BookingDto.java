@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record BookingDto(
-        Long id,
+        int id,
         String type,
         LocalDateTime startTime,
         LocalDateTime endTime,
@@ -16,12 +16,12 @@ public record BookingDto(
         String status,
         BigDecimal totalPrice,
         String notes,
-        Long visitorId,               // expose scalar id for simplicity to FE
+        int visitorId,
         LocalDateTime holdExpiresAt
 ) {
 
     static BookingDto from(Booking b) {
-        Long visitorId = (b.getVisitorId() != 0) ? b.getVisitorId() : 0;
+        int visitorId = (b.getVisitorId() != 0) ? b.getVisitorId() : 0;
         return new BookingDto(
                 b.getId(),
                 b.getType(),
@@ -48,7 +48,6 @@ public record BookingDto(
                 .notes(notes)
                 .holdExpiresAt(holdExpiresAt);
 
-        // If you want to set a customer later, do it in the service (when Customer entity is available)
         return bb.build();
     }
 }
