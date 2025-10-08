@@ -10,11 +10,11 @@ import java.util.Optional;
 @Service
 public class EquipmentService {
 
-    private final IEquipmentRepository iEquipmentRepository;
+    private final EquipmentRepository equipmentRepository;
 
     // Constructor injection of the repository
-    public EquipmentService(IEquipmentRepository iEquipmentRepository) {
-        this.iEquipmentRepository = iEquipmentRepository;
+    public EquipmentService(EquipmentRepository equipmentRepository) {
+        this.equipmentRepository = equipmentRepository;
     }
 
     // Creates a new Equipment after validating and checking for duplicates.
@@ -33,27 +33,27 @@ public class EquipmentService {
             throw new IllegalArgumentException("Equipment cost must be positive");
         }
 
-        if (iEquipmentRepository.findByTitle(equipment.getTitle()).isPresent()) {
+        if (equipmentRepository.findByTitle(equipment.getTitle()).isPresent()) {
             throw new IllegalStateException("Equipment with this title already exists");
         }
 
-        return iEquipmentRepository.save(equipment);
+        return equipmentRepository.save(equipment);
     }
 
     // Returns a list of all equipment.
     public List<Equipment> getAllEquipment() {
-        return iEquipmentRepository.findAll();
+        return equipmentRepository.findAll();
     }
 
     // Returns a single equipment by ID, or Optional.empty() if not found.
     public Optional<Equipment> getEquipmentById(int id) {
-        return iEquipmentRepository.findById(id);
+        return equipmentRepository.findById(id);
     }
 
     // Updates an existing equipment by ID with new data.
     @Transactional
     public Equipment updateEquipment(int id, Equipment updatedEquipment) {
-        Equipment existing = iEquipmentRepository.findById(id)
+        Equipment existing = equipmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Equipment not found"));
 
         if (updatedEquipment.getTitle() == null || updatedEquipment.getTitle().isBlank()) {
@@ -69,7 +69,7 @@ public class EquipmentService {
             throw new IllegalArgumentException("Equipment cost must be positive");
         }
 
-        Optional<Equipment> duplicate = iEquipmentRepository.findByTitle(updatedEquipment.getTitle());
+        Optional<Equipment> duplicate = equipmentRepository.findByTitle(updatedEquipment.getTitle());
         if (duplicate.isPresent() && duplicate.get().getId() != id) {
             throw new IllegalStateException("Another equipment with this title already exists");
         }
@@ -79,14 +79,14 @@ public class EquipmentService {
         existing.setBroken(updatedEquipment.getBroken());
         existing.setCost(updatedEquipment.getCost());
 
-        return iEquipmentRepository.save(existing);
+        return equipmentRepository.save(existing);
     }
 
     // Deletes an equipment by ID and returns true if deleted, false if not found.
     @Transactional
     public boolean deleteEquipment(int id) {
-        if (iEquipmentRepository.existsById(id)) {
-            iEquipmentRepository.deleteById(id);
+        if (equipmentRepository.existsById(id)) {
+            equipmentRepository.deleteById(id);
             return true;
         }
         return false;
@@ -94,11 +94,11 @@ public class EquipmentService {
 
     // Finds all equipment with broken count greater than specified value.
     public List<Equipment> getEquipmentWithBrokenCountGreaterThan(int brokenCount) {
-        return iEquipmentRepository.findByBrokenGreaterThan(brokenCount);
+        return equipmentRepository.findByBrokenGreaterThan(brokenCount);
     }
 
     // Finds all equipment with amount less than or equal to specified value.
     public List<Equipment> getEquipmentWithLowStock(int amountThreshold) {
-        return iEquipmentRepository.findByAmountLessThanEqual(amountThreshold);
+        return equipmentRepository.findByAmountLessThanEqual(amountThreshold);
     }
 }
