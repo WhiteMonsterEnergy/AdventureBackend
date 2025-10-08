@@ -1,32 +1,57 @@
 package white.monster.energy.adventurebackend.activityTest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
+import jakarta.persistence.EntityManager;
 import white.monster.energy.adventurebackend.activity.ActivityRepository;
+import white.monster.energy.adventurebackend.activity.Activity;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@Sql(
-//        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-//        scripts = {"classpath:data-h2.sql"}
-//)
 @DataJpaTest
 public class ActivityRepositoryTest {
 
     @Autowired
     private ActivityRepository activityRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        // Arrange: Persist test activities using reflection
+        entityManager.persist(setActivityFields(new Activity(), "Test Title", 18, 20));
+        entityManager.persist(setActivityFields(new Activity(), "Another Activity", 12, 15));
+        entityManager.persist(setActivityFields(new Activity(), "Hiking", 10, 30));
+        entityManager.persist(setActivityFields(new Activity(), "Kayaking", 16, 10));
+        entityManager.flush();
+    }
+
+    private Activity setActivityFields(Activity activity, String title, int ageLimit, int capacity) throws Exception {
+        var clazz = activity.getClass();
+        var titleField = clazz.getDeclaredField("title");
+        titleField.setAccessible(true);
+        titleField.set(activity, title);
+
+        var ageLimitField = clazz.getDeclaredField("ageLimit");
+        ageLimitField.setAccessible(true);
+        ageLimitField.set(activity, ageLimit);
+
+        var capacityField = clazz.getDeclaredField("capacity");
+        capacityField.setAccessible(true);
+        capacityField.set(activity, capacity);
+
+        return activity;
+    }
+
     @Test
     void testFindByTitle_Found() {
-        // Arrange: Data is pre-populated by data-h2.sql
-
         // Act: Find activity by title
-        Optional<white.monster.energy.adventurebackend.activity.Activity> found =
-                activityRepository.findByTitle("Test Title");
+        Optional<Activity> found = activityRepository.findByTitle("Test Title");
 
         // Assert: Activity is found and title matches
         assertTrue(found.isPresent());
@@ -35,11 +60,8 @@ public class ActivityRepositoryTest {
 
     @Test
     void testFindByTitle_AnotherActivity() {
-        // Arrange: Data is pre-populated by data-h2.sql
-
         // Act: Find another activity by title
-        Optional<white.monster.energy.adventurebackend.activity.Activity> found =
-                activityRepository.findByTitle("Another Activity");
+        Optional<Activity> found = activityRepository.findByTitle("Another Activity");
 
         // Assert: Activity is found and title matches
         assertTrue(found.isPresent());
@@ -48,11 +70,8 @@ public class ActivityRepositoryTest {
 
     @Test
     void testFindByTitle_NotFound() {
-        // Arrange: Data is pre-populated by data-h2.sql
-
         // Act: Try to find an activity by a title that does not exist
-        Optional<white.monster.energy.adventurebackend.activity.Activity> found =
-                activityRepository.findByTitle("Nonexistent Title");
+        Optional<Activity> found = activityRepository.findByTitle("Nonexistent Title");
 
         // Assert: Activity is not found
         assertFalse(found.isPresent());
