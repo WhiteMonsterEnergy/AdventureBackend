@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import white.monster.energy.adventurebackend.booking.Booking;
+import white.monster.energy.adventurebackend.booking.BookingService;
 import white.monster.energy.adventurebackend.profile.*;
 
 
@@ -17,9 +19,11 @@ import java.util.Map;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final BookingService bookingService;
 
-    public ProfileController(ProfileService profileService) {
+    public ProfileController(ProfileService profileService, BookingService bookingService) {
         this.profileService = profileService;
+        this.bookingService = bookingService;
     }
 
     @GetMapping("/login")
@@ -50,16 +54,16 @@ public class ProfileController {
 
         if ("ADMIN".equals(profileType)) {
             List<Profile> profiles = profileService.getAllProfiles();
-//    List<Booking> bookings = bookingService.findAllBookings();
+    List<Booking> bookings = bookingService.listAll();
 
             Map<Integer, List<Integer>> profileAccessMap =new HashMap<>();
             for (Profile profile : profiles) {
-//        List<Integer> accessList = accessRepository.findBookingIdsbyId(profile.getId());
-                //      profileAccessMap.put(profile.getId(), accessList);
+       List<Integer> accessList = accessRepository.findBookingIdsbyId(profile.getId());
+                     profileAccessMap.put(profile.getId(), accessList);
 
             }
             model.addAttribute("profiles", profiles);
-//    model.addAttribute("bookings", bookings);
+    model.addAttribute("bookings", bookings);
             model.addAttribute("profileAccessMap", profileAccessMap);
             model.addAttribute("succes", succes != null && succes);
             return "admin-edit-access";
@@ -72,7 +76,6 @@ public class ProfileController {
 
         return "redirect:/access-denied";
     }
-    /*
     @PostMapping("/admin/update-access")
     public String updateProfileAccess(@RequestParam int id, @RequestParam(required = false) List<Integer> bookingIds) {
     accessRepository.removeAllAccessForProfile(id);
@@ -87,7 +90,7 @@ public class ProfileController {
     }
     return "redirect:/profile/edit-profile?id=" + id + "&succes=true";
     }
-    */
+
     @PostMapping("profile/update")
     public String updateProfile(@RequestParam int id, @RequestParam String name, @RequestParam String password, HttpSession session) {
         Integer loggedinId = (Integer) session.getAttribute("id");
