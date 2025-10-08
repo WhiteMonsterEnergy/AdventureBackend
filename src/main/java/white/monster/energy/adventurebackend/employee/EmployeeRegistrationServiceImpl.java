@@ -8,16 +8,16 @@ import java.util.List;
 public class EmployeeRegistrationServiceImpl implements EmployeeRegistrationService {
 
     // Repository for Employee entity operations
-    private final IEmployeeRepository iEmployeeRepository;
+    private final EmployeeRepository employeeRepository;
 
     // Constructor injection of the employee repository
-    public EmployeeRegistrationServiceImpl(IEmployeeRepository iEmployeeRepository) {
-        this.iEmployeeRepository = iEmployeeRepository;
+    public EmployeeRegistrationServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
     // Returns all employees from the repository
     public List<Employee> getAllEmployees() {
-        return iEmployeeRepository.findAll();
+        return employeeRepository.findAll();
     }
 
     // Registers a new employee using DTO
@@ -46,7 +46,7 @@ public class EmployeeRegistrationServiceImpl implements EmployeeRegistrationServ
         employee.setRole(role); // Set employee role
 
         // Save the employee to the database and return the saved entity
-        return iEmployeeRepository.save(employee);
+        return employeeRepository.save(employee);
     }
 
 

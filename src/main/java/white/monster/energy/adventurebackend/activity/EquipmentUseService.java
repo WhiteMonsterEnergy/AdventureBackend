@@ -2,20 +2,20 @@ package white.monster.energy.adventurebackend.activity;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import white.monster.energy.adventurebackend.equipment.IEquipmentRepository;
+import white.monster.energy.adventurebackend.equipment.EquipmentRepository;
 
 import java.util.List;
 
 @Service
 public class EquipmentUseService {
 
-    private final IEquipmentUseRepository equipmentUseRepository;
-    private final IEquipmentRepository equipmentRepository;
-    private final IActivityRepository activityRepository;
+    private final EquipmentUseRepository equipmentUseRepository;
+    private final EquipmentRepository equipmentRepository;
+    private final ActivityRepository activityRepository;
 
-    public EquipmentUseService(IEquipmentUseRepository equipmentUseRepository,
-                               IEquipmentRepository equipmentRepository,
-                               IActivityRepository activityRepository) {
+    public EquipmentUseService(EquipmentUseRepository equipmentUseRepository,
+                               EquipmentRepository equipmentRepository,
+                               ActivityRepository activityRepository) {
         this.equipmentUseRepository = equipmentUseRepository;
         this.equipmentRepository = equipmentRepository;
         this.activityRepository = activityRepository;
