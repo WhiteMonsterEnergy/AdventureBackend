@@ -38,7 +38,7 @@ public class BookingController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        // very simple filtering using service methods you already have
+        // very simple filtering using service methods
         List<Booking> data;
         long total;
 
