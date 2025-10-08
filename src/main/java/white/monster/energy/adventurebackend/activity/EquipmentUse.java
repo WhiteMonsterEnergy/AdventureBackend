@@ -26,7 +26,7 @@ public class EquipmentUse {
     // Many-to-one relationship to Equipment
     @ManyToOne
     @JoinColumn(name = "equipment_id")
-    @JsonBackReference
+    @JsonBackReference(value = "equipment-equipmentuse")
     private Equipment equipment;
 
 
