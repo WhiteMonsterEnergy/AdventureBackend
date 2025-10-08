@@ -9,8 +9,7 @@ import jakarta.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
-
+public interface BookingRepository extends JpaRepository<Booking, Long>{
 
     List<Booking> findByVisitorId(Long visitorId);
 
