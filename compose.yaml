@@ -1,3 +1,5 @@
+
+name: AdventureXP
 services:
   mysql:
     image: mysql:latest
@@ -18,7 +20,7 @@ services:
     build:
       context: .
     ports:
-      - "127.0.0.1:8082:8080"
+      - "127.0.0.1:8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=mysql
       - DB_DRIVER=com.mysql.cj.jdbc.Driver
@@ -31,7 +33,7 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ..\AdventureFrontend
+      context: ../AdventureFrontend
     ports:
       - "127.0.0.1:8080:8080"
 
