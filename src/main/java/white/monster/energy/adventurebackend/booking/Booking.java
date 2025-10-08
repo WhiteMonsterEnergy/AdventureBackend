@@ -26,7 +26,7 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(nullable = false, length = 20)
     private String type;
@@ -50,7 +50,7 @@ public class Booking {
     private String notes;
 
     @Column(name = "visitor_id", nullable = false)
-    private Long visitorId;
+    private int visitorId;
 
     @Column(name = "hold_expires_at")
     private LocalDateTime holdExpiresAt;

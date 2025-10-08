@@ -9,9 +9,9 @@ import jakarta.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public interface BookingRepository extends JpaRepository<Booking, Long>{
+public interface BookingRepository extends JpaRepository<Booking, Integer>{
 
-    List<Booking> findByVisitorId(Long visitorId);
+    List<Booking> findByVisitorId(int visitorId);
 
     Page<Booking> findByStatusIn(Collection<String> statuses, Pageable pageable);
 
@@ -62,5 +62,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long>{
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT b FROM Booking b WHERE b.id = :id")
-    Optional<Booking> findByIdForUpdate(@Param("id") Long id);
+    Optional<Booking> findByIdForUpdate(@Param("id") int id);
 }
