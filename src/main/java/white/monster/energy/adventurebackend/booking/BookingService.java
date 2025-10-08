@@ -99,4 +99,10 @@ public class BookingService {
         bookingRepository.deleteById(id);
         return true;
     }
+
+    @Transactional
+    public Booking save(Booking booking) {
+        return bookingRepository.save(booking);
+    }
+
 }
