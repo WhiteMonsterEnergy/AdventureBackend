@@ -22,7 +22,7 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public Booking getById(Long id) {
+    public Booking getById(int id) {
         return bookingRepository.findById(id).orElse(null);
     }
 
@@ -32,12 +32,12 @@ public class BookingService {
     }
 
     @Transactional(readOnly = true)
-    public List<Booking> listByCustomer(Long visitorId) {
+    public List<Booking> listByCustomer(int visitorId) {
         return bookingRepository.findByVisitorId(visitorId);
     }
 
     @Transactional
-    public Booking confirm(Long id) {
+    public Booking confirm(int id) {
         Booking b = getById(id);
         if (b == null) return null;
         b.setStatus("CONFIRMED");
@@ -46,7 +46,7 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking cancel(Long id) {
+    public Booking cancel(int id) {
         Booking b = getById(id);
         if (b == null) return null;
         b.setStatus("CANCELLED");
@@ -54,7 +54,7 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking setHold(Long id, LocalDateTime expiresAt) {
+    public Booking setHold(int id, LocalDateTime expiresAt) {
         Booking b = getById(id);
         if (b == null) return null;
         b.setStatus("HOLD");
@@ -77,7 +77,7 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking update(Long id, BookingDto dto) {
+    public Booking update(int id, BookingDto dto) {
         Booking b = getById(id);
         if (b == null) return null;
 
@@ -94,7 +94,7 @@ public class BookingService {
     }
 
     @Transactional
-    public boolean delete(Long id) {
+    public boolean delete(int id) {
         if (!bookingRepository.existsById(id)) return false;
         bookingRepository.deleteById(id);
         return true;
