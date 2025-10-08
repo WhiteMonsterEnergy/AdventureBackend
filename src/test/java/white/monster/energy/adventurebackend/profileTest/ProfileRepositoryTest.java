@@ -1,9 +1,8 @@
-package white.monster.energy.adventurebackend;
+package white.monster.energy.adventurebackend.profileTest;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BookingTests
-{
+public class ProfileRepositoryTest {
 }

@@ -6,8 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import white.monster.energy.adventurebackend.profile.*;
-
+import white.monster.energy.adventurebackend.booking.Booking;
+import white.monster.energy.adventurebackend.booking.BookingService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +17,13 @@ import java.util.Map;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final BookingService bookingService;
+    private final BookingAccessRepository bookingAccessRepository;
 
-    public ProfileController(ProfileService profileService) {
+    public ProfileController(ProfileService profileService, BookingService bookingService, BookingAccessRepository bookingAccessRepository) {
         this.profileService = profileService;
+        this.bookingService = bookingService;
+        this.bookingAccessRepository = bookingAccessRepository;
     }
 
     @GetMapping("/login")
@@ -50,16 +54,16 @@ public class ProfileController {
 
         if ("ADMIN".equals(profileType)) {
             List<Profile> profiles = profileService.getAllProfiles();
-//    List<Booking> bookings = bookingService.findAllBookings();
+    List<Booking> bookings = bookingService.listAll();
 
             Map<Integer, List<Integer>> profileAccessMap =new HashMap<>();
             for (Profile profile : profiles) {
-//        List<Integer> accessList = accessRepository.findBookingIdsbyId(profile.getId());
-                //      profileAccessMap.put(profile.getId(), accessList);
+       List<Integer> accessList = bookingAccessRepository.findBookingIdsByProfileId(profile.getId());
+                profileAccessMap.put(profile.getId(), accessList);
 
             }
             model.addAttribute("profiles", profiles);
-//    model.addAttribute("bookings", bookings);
+    model.addAttribute("bookings", bookings);
             model.addAttribute("profileAccessMap", profileAccessMap);
             model.addAttribute("succes", succes != null && succes);
             return "admin-edit-access";
@@ -72,22 +76,23 @@ public class ProfileController {
 
         return "redirect:/access-denied";
     }
-    /*
+
     @PostMapping("/admin/update-access")
     public String updateProfileAccess(@RequestParam int id, @RequestParam(required = false) List<Integer> bookingIds) {
-    accessRepository.removeAllAccessForProfile(id);
+    bookingAccessRepository.deleteByProfileId(id);
     if (bookingIds != null) {
         for (Integer bookingId : bookingIds) {
-            bookingAccess access = new bookingAccess();
-            access. setId(id);
+            BookingAccess access = new BookingAccess();
             access.setBookingId(bookingId);
-    access.setAccessType("EDIT");
-            accessRepository.addAccess(access);
+    access.setAccessType(AccessType.EDIT);
+            bookingAccessRepository.save(access);
         }
     }
+
+
     return "redirect:/profile/edit-profile?id=" + id + "&succes=true";
     }
-    */
+
     @PostMapping("profile/update")
     public String updateProfile(@RequestParam int id, @RequestParam String name, @RequestParam String password, HttpSession session) {
         Integer loggedinId = (Integer) session.getAttribute("id");
@@ -116,6 +121,9 @@ public class ProfileController {
         return "redirect:/admin/edit-profile-form";
     }
 
+
+    /*kun admin skal kunne lave profiler*/
+    /*sørg for at der er en admin profil hardcoded ind! */
     @PostMapping("/admin/create-profile")
     public String createNewProfile(@RequestParam String name, @RequestParam String password, @RequestParam ProfileType type) {
         Profile profile = new Profile();
