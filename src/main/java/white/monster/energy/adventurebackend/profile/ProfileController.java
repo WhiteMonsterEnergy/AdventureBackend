@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingService;
-import white.monster.energy.adventurebackend.profile.*;
-
 
 import java.util.HashMap;
 import java.util.List;
