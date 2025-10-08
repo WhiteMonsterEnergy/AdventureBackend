@@ -20,13 +20,11 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final BookingService bookingService;
-    private final BookingAccess bookingAccess;
     private final BookingAccessRepository bookingAccessRepository;
 
-    public ProfileController(ProfileService profileService, BookingService bookingService, BookingAccess bookingAccess, BookingAccessRepository bookingAccessRepository) {
+    public ProfileController(ProfileService profileService, BookingService bookingService, BookingAccessRepository bookingAccessRepository) {
         this.profileService = profileService;
         this.bookingService = bookingService;
-        this.bookingAccess = bookingAccess;
         this.bookingAccessRepository = bookingAccessRepository;
     }
 
@@ -62,8 +60,8 @@ public class ProfileController {
 
             Map<Integer, List<Integer>> profileAccessMap =new HashMap<>();
             for (Profile profile : profiles) {
-//       List<Integer> accessList = bookingAccessRepository.findBookingIdsbyId(profile.getId());
-  //                   profileAccessMap.put(profile.getId(), accessList);
+       List<Integer> accessList = bookingAccessRepository.findBookingIdsByProfileId(profile.getId());
+                profileAccessMap.put(profile.getId(), accessList);
 
             }
             model.addAttribute("profiles", profiles);
@@ -80,24 +78,23 @@ public class ProfileController {
 
         return "redirect:/access-denied";
     }
-    /*
+
     @PostMapping("/admin/update-access")
     public String updateProfileAccess(@RequestParam int id, @RequestParam(required = false) List<Integer> bookingIds) {
-    bookingAccessRepository.removeAllAccessForProfile(id);
+    bookingAccessRepository.deleteByProfileId(id);
     if (bookingIds != null) {
         for (Integer bookingId : bookingIds) {
-            bookingAccess access = new bookingAccess();
-            access. setId(id);
+            BookingAccess access = new BookingAccess();
             access.setBookingId(bookingId);
-    access.setAccessType("EDIT");
-            bookingAccessRepository.addAccess(access);
+    access.setAccessType(AccessType.EDIT);
+            bookingAccessRepository.save(access);
         }
     }
 
 
     return "redirect:/profile/edit-profile?id=" + id + "&succes=true";
     }
- */
+
     @PostMapping("profile/update")
     public String updateProfile(@RequestParam int id, @RequestParam String name, @RequestParam String password, HttpSession session) {
         Integer loggedinId = (Integer) session.getAttribute("id");
@@ -126,6 +123,9 @@ public class ProfileController {
         return "redirect:/admin/edit-profile-form";
     }
 
+
+    /*kun admin skal kunne lave profiler*/
+    /*sørg for at der er en admin profil hardcoded ind! */
     @PostMapping("/admin/create-profile")
     public String createNewProfile(@RequestParam String name, @RequestParam String password, @RequestParam ProfileType type) {
         Profile profile = new Profile();
