@@ -15,7 +15,7 @@ import java.util.stream.*;
 
 @RestController
 @RequestMapping("/api/bookings")
-@CrossOrigin // <- open CORS for your JS (tighten later)
+@CrossOrigin // <- open CORS for JS
 public class BookingController {
 
     private final BookingService service;
@@ -38,7 +38,7 @@ public class BookingController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        // very simple filtering using service methods
+        // filtering using service methods
         List<Booking> data;
         long total;
 
@@ -62,7 +62,7 @@ public class BookingController {
 
     // --- GET by id ---
     @GetMapping("/{id}")
-    public ResponseEntity<BookingDto> get(@PathVariable Long id) {
+    public ResponseEntity<BookingDto> get(@PathVariable int id) {
         Booking b = service.getById(id);
         return (b == null) ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(BookingDto.from(b));
@@ -76,9 +76,9 @@ public class BookingController {
                 .body(BookingDto.from(created));
     }
 
-    // --- UPDATE (partial) ---
+    // --- UPDATE ---
     @PatchMapping("/{id}")
-    public ResponseEntity<BookingDto> update(@PathVariable Long id, @RequestBody BookingDto dto) {
+    public ResponseEntity<BookingDto> update(@PathVariable int id, @RequestBody BookingDto dto) {
         Booking updated = service.update(id, dto);
         return (updated == null) ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(BookingDto.from(updated));
@@ -86,7 +86,7 @@ public class BookingController {
 
     // --- DELETE ---
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
         boolean ok = service.delete(id);
         return ok ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }

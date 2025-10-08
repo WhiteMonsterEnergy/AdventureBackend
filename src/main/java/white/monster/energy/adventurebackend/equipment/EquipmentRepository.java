@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 // Repository interface for Equipment entities.
-public interface IEquipmentRepository extends JpaRepository<Equipment, Integer> {
+public interface EquipmentRepository extends JpaRepository<Equipment, Integer> {
 
     // Finds equipment by its title. Used to check for duplicates before creating a new equipment entry.
     Optional<Equipment> findByTitle(String title);
