@@ -20,10 +20,14 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final BookingService bookingService;
+    private final BookingAccess bookingAccess;
+    private final BookingAccessRepository bookingAccessRepository;
 
-    public ProfileController(ProfileService profileService, BookingService bookingService) {
+    public ProfileController(ProfileService profileService, BookingService bookingService, BookingAccess bookingAccess, BookingAccessRepository bookingAccessRepository) {
         this.profileService = profileService;
         this.bookingService = bookingService;
+        this.bookingAccess = bookingAccess;
+        this.bookingAccessRepository = bookingAccessRepository;
     }
 
     @GetMapping("/login")
@@ -58,8 +62,8 @@ public class ProfileController {
 
             Map<Integer, List<Integer>> profileAccessMap =new HashMap<>();
             for (Profile profile : profiles) {
-       List<Integer> accessList = accessRepository.findBookingIdsbyId(profile.getId());
-                     profileAccessMap.put(profile.getId(), accessList);
+//       List<Integer> accessList = bookingAccessRepository.findBookingIdsbyId(profile.getId());
+  //                   profileAccessMap.put(profile.getId(), accessList);
 
             }
             model.addAttribute("profiles", profiles);
@@ -76,21 +80,24 @@ public class ProfileController {
 
         return "redirect:/access-denied";
     }
+    /*
     @PostMapping("/admin/update-access")
     public String updateProfileAccess(@RequestParam int id, @RequestParam(required = false) List<Integer> bookingIds) {
-    accessRepository.removeAllAccessForProfile(id);
+    bookingAccessRepository.removeAllAccessForProfile(id);
     if (bookingIds != null) {
         for (Integer bookingId : bookingIds) {
             bookingAccess access = new bookingAccess();
             access. setId(id);
             access.setBookingId(bookingId);
     access.setAccessType("EDIT");
-            accessRepository.addAccess(access);
+            bookingAccessRepository.addAccess(access);
         }
     }
+
+
     return "redirect:/profile/edit-profile?id=" + id + "&succes=true";
     }
-
+ */
     @PostMapping("profile/update")
     public String updateProfile(@RequestParam int id, @RequestParam String name, @RequestParam String password, HttpSession session) {
         Integer loggedinId = (Integer) session.getAttribute("id");
