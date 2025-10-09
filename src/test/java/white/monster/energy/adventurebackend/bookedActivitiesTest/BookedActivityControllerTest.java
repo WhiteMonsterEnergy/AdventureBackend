@@ -7,7 +7,6 @@ import white.monster.energy.adventurebackend.bookedActivities.*;
 import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.booking.Booking;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -116,7 +115,7 @@ public class BookedActivityControllerTest {
         partField.set(booking, 8);
         var priceField = booking.getClass().getDeclaredField("totalPrice");
         priceField.setAccessible(true);
-        priceField.set(booking, BigDecimal.valueOf(123.45));
+        priceField.set(booking, 123.45); // Use double instead of BigDecimal
         var statusField = booking.getClass().getDeclaredField("status");
         statusField.setAccessible(true);
         statusField.set(booking, "CONFIRMED");

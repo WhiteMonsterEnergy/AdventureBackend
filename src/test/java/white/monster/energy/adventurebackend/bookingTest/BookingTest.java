@@ -3,7 +3,6 @@ package white.monster.energy.adventurebackend.bookingTest;
 import org.junit.jupiter.api.Test;
 import white.monster.energy.adventurebackend.booking.Booking;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +45,7 @@ public class BookingTest {
 
         var priceField = booking.getClass().getDeclaredField("totalPrice");
         priceField.setAccessible(true);
-        priceField.set(booking, BigDecimal.valueOf(99.99));
+        priceField.set(booking, 99.99); // Use double
 
         var notesField = booking.getClass().getDeclaredField("notes");
         notesField.setAccessible(true);
@@ -79,7 +78,7 @@ public class BookingTest {
         assertEquals(end, booking.getEndTime());
         assertEquals(5, booking.getParticipants());
         assertEquals("CONFIRMED", booking.getStatus());
-        assertEquals(BigDecimal.valueOf(99.99), booking.getTotalPrice());
+        assertEquals(99.99, booking.getTotalPrice());
         assertEquals("Test notes", booking.getNotes());
         assertEquals(42, booking.getVisitorId());
         assertEquals(holdExpires, booking.getHoldExpiresAt());

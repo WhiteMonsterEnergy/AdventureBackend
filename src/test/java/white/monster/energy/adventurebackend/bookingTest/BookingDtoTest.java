@@ -5,7 +5,6 @@ import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingDto;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +21,7 @@ public class BookingDtoTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("CONFIRMED")
-                .totalPrice(BigDecimal.valueOf(100))
+                .totalPrice(Double.valueOf(100))
                 .visitorId(1)
                 .notes("Test notes")
                 .holdExpiresAt(LocalDateTime.now().plusDays(1))
@@ -50,7 +49,7 @@ public class BookingDtoTest {
         LocalDateTime holdExpires = start.plusDays(1);
         BookingDto dto = new BookingDto(
                 2, "EQUIPMENT", start, end,
-                2, "HOLD", BigDecimal.valueOf(200), "Some notes", 5, holdExpires
+                2, "HOLD", Double.valueOf(200), "Some notes", 5, holdExpires
         );
 
         // Act
@@ -58,7 +57,6 @@ public class BookingDtoTest {
         toEntityMethod.setAccessible(true);
         Booking booking = (Booking) toEntityMethod.invoke(dto);
 
-        // Fix: set visitorId manually since toEntity() does not set it
         var visitorIdField = booking.getClass().getDeclaredField("visitorId");
         visitorIdField.setAccessible(true);
         visitorIdField.set(booking, dto.visitorId());
