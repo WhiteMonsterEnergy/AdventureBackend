@@ -1,11 +1,11 @@
 package white.monster.energy.adventurebackend.profile;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingService;
 
@@ -13,7 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
+@CrossOrigin("*")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -26,23 +27,22 @@ public class ProfileController {
         this.bookingAccessRepository = bookingAccessRepository;
     }
 
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "login";
-    }
-
     @PostMapping("/login")
-    public String LoginProfile(@RequestParam String name, @RequestParam String password, HttpSession httpSession, Model model) {
-        Profile profile = profileService.authenticateAndGetProfile(name, password);
-        if (profile != null) {
-            httpSession.setAttribute("id", profile.getId());
-            httpSession.setAttribute("type", profile.getType());
-            return "redirect:/bookings";
+    public ResponseEntity<Profile> LoginProfile(@RequestBody Profile profile, HttpServletRequest request)
+    {
+        profile = profileService.authenticateAndGetProfile(profile.getName(), profile.getPassword());
 
+        if (profile != null)
+        {
+            HttpSession session = request.getSession();
+            session.setMaxInactiveInterval(1200);
+            session.setAttribute("profile", profile);
+            return ResponseEntity.ok(profile);
         }
-        model.addAttribute("error", "name or password incorrect");
-        return "login";
+
+        return ResponseEntity.notFound().build();
     }
+
     /* her skal der lige ændres, så det kun er admin der kan ændre i profiler*/
     @GetMapping("/profile/edit-profile")
     public String showEditProfileForm (@RequestParam int id, @RequestParam(required = false) Boolean succes, HttpSession session, Model model) {
