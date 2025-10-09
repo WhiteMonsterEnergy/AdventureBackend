@@ -6,7 +6,6 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import white.monster.energy.adventurebackend.booking.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +17,7 @@ public class BookingServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Arrange: Mock repository and service
+        // Arrange
         bookingRepository = Mockito.mock(BookingRepository.class);
         bookingService = new BookingService(bookingRepository);
 
@@ -29,7 +28,7 @@ public class BookingServiceTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("DRAFT")
-                .totalPrice(BigDecimal.valueOf(100))
+                .totalPrice(100.0)
                 .visitorId(1)
                 .build();
 
@@ -42,15 +41,17 @@ public class BookingServiceTest {
 
     @Test
     void testCreateBooking() {
-        // Act
+        // Arrange
         Booking booking = Booking.builder()
                 .type("ACTIVITY")
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
-                .totalPrice(BigDecimal.valueOf(100))
+                .totalPrice(100.0)
                 .visitorId(1)
                 .build();
+
+        // Act
         Booking created = bookingService.create(booking);
 
         // Assert
@@ -60,6 +61,8 @@ public class BookingServiceTest {
 
     @Test
     void testGetById() {
+        // Arrange
+
         // Act
         Booking found = bookingService.getById(1);
 
@@ -70,6 +73,8 @@ public class BookingServiceTest {
 
     @Test
     void testListByCustomer() {
+        // Arrange
+
         // Act
         List<Booking> bookings = bookingService.listByCustomer(1);
 

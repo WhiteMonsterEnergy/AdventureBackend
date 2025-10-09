@@ -42,8 +42,8 @@ public class Booking {
     @Column(nullable = false, length = 30)
     private String status;
 
-    @Column(nullable = false, precision = 12, scale = 2)
-    private Double totalPrice;
+    @Column(nullable = false)
+    private double totalPrice;
 
     @Column(length = 1000)
     private String notes;

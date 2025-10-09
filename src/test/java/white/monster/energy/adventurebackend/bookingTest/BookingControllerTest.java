@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import white.monster.energy.adventurebackend.booking.*;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class BookingControllerTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("CONFIRMED")
-                .totalPrice(BigDecimal.valueOf(100))
+                .totalPrice(100.0)
                 .visitorId(1)
                 .build();
         Mockito.when(service.getById(1)).thenReturn(booking);
@@ -48,7 +47,7 @@ public class BookingControllerTest {
         BookingController controller = new BookingController(service);
         BookingDto dto = new BookingDto(
                 0, "ACTIVITY", LocalDateTime.now(), LocalDateTime.now().plusHours(1),
-                1, "DRAFT", BigDecimal.valueOf(100), "notes", 1, null
+                1, "DRAFT", 100.0, "notes", 1, null
         );
         Method toEntityMethod = BookingDto.class.getDeclaredMethod("toEntity");
         toEntityMethod.setAccessible(true);
@@ -76,7 +75,7 @@ public class BookingControllerTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("CONFIRMED")
-                .totalPrice(BigDecimal.valueOf(100))
+                .totalPrice(100.0)
                 .visitorId(1)
                 .build();
         Mockito.when(service.findAll(PageRequest.of(0, 20))).thenReturn(new PageImpl<>(List.of(booking)));
