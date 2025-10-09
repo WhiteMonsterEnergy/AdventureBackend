@@ -32,12 +32,12 @@ public class ProfileTest {
     @Test
     void testAllArgsConstructor() {
         // Arrange & Act
-        Profile profile = new Profile(7, "Bob", "hunter2", ProfileType.EMPLOYEE);
+        Profile profile = new Profile(7, "Bob", "hunter2", ProfileType.values()[0]);
 
         // Assert
         assertEquals(7, profile.getId());
         assertEquals("Bob", profile.getName());
         assertEquals("hunter2", profile.getPassword());
-        assertEquals(ProfileType.EMPLOYEE, profile.getType());
+        assertEquals(ProfileType.values()[0], profile.getType());
     }
 }
