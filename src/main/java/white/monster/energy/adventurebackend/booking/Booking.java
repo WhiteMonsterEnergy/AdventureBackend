@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -44,7 +43,7 @@ public class Booking {
     private String status;
 
     @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal totalPrice;
+    private Double totalPrice;
 
     @Column(length = 1000)
     private String notes;

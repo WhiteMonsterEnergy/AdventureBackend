@@ -3,7 +3,6 @@ package white.monster.energy.adventurebackend.booking;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,7 +13,7 @@ public record BookingDto(
         LocalDateTime endTime,
         Integer participants,
         String status,
-        BigDecimal totalPrice,
+        Double totalPrice,
         String notes,
         int visitorId,
         LocalDateTime holdExpiresAt

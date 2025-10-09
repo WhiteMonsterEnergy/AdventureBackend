@@ -15,7 +15,7 @@ import java.util.stream.*;
 
 @RestController
 @RequestMapping("/api/bookings")
-@CrossOrigin // <- open CORS for JS
+@CrossOrigin
 public class BookingController {
 
     private final BookingService service;

@@ -8,7 +8,7 @@ import white.monster.energy.adventurebackend.activity.ActivityRepository;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingService;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +20,6 @@ public class BookedActivityService {
     private final ActivityRepository activityRepo;
     private final BookingService bookingService;
 
-    /** Add a single activity to a draft booking; enforces the “max 3” rule. */
     @Transactional
     public BookedActivity addActivityToBooking(int bookingId, int activityId) {
         Booking booking = bookingService.getById(bookingId);
@@ -35,7 +34,6 @@ public class BookedActivityService {
         BookedActivity ba = new BookedActivity();
         ba.setBooking(booking);
         ba.setActivity(activity);
-        // per-activity timings computed at finalize.
         return repo.save(ba);
     }
 
@@ -60,26 +58,25 @@ public class BookedActivityService {
         if (items.size() > 3) throw new IllegalStateException("Max 3 activities per booking");
 
         int totalMinutes = 0;
-        BigDecimal totalPrice = BigDecimal.ZERO;
+        double totalPrice = 0.0;
 
-        // --- calculation: total = (sum of activity prices) × participants ---
+        // calculation: total = (sum of activity prices) × participants
         for (BookedActivity ba : items) {
             Activity a = ba.getActivity();
             totalMinutes += Math.max(a.getMinimumMinutes(), 0);
 
             // accumulate (activity price × participants)
-            BigDecimal pricePerActivity = BigDecimal.valueOf(Math.max(a.getPrice(), 0.0));
-            BigDecimal priceForParticipants = pricePerActivity.multiply(BigDecimal.valueOf(participants));
-            totalPrice = totalPrice.add(priceForParticipants);
+            double pricePerActivity = Math.max(a.getPrice(), 0.0);
+            double priceForParticipants = pricePerActivity * participants;
+            totalPrice += priceForParticipants;
         }
 
-        // --- update booking info ---
+        // update booking info
         booking.setStartTime(startTime);
         booking.setEndTime(startTime.plusMinutes(totalMinutes));
         booking.setParticipants(participants);
         booking.setTotalPrice(totalPrice);
 
-        // optional: update status if not already set
         if (booking.getStatus() == null) {
             booking.setStatus("DRAFT");
         }
