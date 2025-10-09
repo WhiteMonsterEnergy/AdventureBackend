@@ -8,7 +8,6 @@ import white.monster.energy.adventurebackend.profile.BookingAccessRepository;
 import white.monster.energy.adventurebackend.profile.AccessType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 

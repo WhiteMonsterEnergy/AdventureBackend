@@ -1,4 +1,3 @@
-// src/test/java/white/monster/energy/adventurebackend/bookingTest/BookingControllerTest.java
 package white.monster.energy.adventurebackend.bookingTest;
 
 import org.junit.jupiter.api.Test;

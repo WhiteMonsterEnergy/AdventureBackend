@@ -1,7 +1,6 @@
 package white.monster.energy.adventurebackend.profileTest;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 import white.monster.energy.adventurebackend.booking.BookingService;
 import white.monster.energy.adventurebackend.profile.*;
