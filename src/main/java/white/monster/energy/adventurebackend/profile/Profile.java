@@ -1,9 +1,9 @@
 package white.monster.energy.adventurebackend.profile;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,24 +15,10 @@ public class Profile
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String name;
+    private ProfileType type;
 
-private int id;
-private String name;
-private String password;
-private ProfileType type;
-
-    public Profile(int id, String name, String password, ProfileType type) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.type = type;
-    }
-
-public Profile () {
-
-}
-
-
-
+    private String password;
 }
 

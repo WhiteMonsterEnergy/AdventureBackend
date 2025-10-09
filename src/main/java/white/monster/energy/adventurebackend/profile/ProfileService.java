@@ -37,14 +37,8 @@ public Profile getProfileById(int id) {
 }
 
 public Profile authenticateAndGetProfile(String name, String password) {
-        Optional<Profile> optionalProfile = profileRepository.findByName(name);
-        if (optionalProfile.isPresent()) {
-            Profile profile = optionalProfile.get();
-            if (profile.getPassword().equals(password)) {
-                return profile;
-            }
-        }
-        return null;
+        Optional<Profile> optionalProfile = profileRepository.findByNameAndPassword(name, password);
+    return optionalProfile.orElse(null);
 }
 
 public HttpSession verifySession(HttpServletRequest request)
