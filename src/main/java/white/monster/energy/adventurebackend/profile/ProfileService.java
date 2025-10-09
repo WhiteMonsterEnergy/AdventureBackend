@@ -1,5 +1,7 @@
 package white.monster.energy.adventurebackend.profile;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,6 +45,12 @@ public Profile authenticateAndGetProfile(String name, String password) {
             }
         }
         return null;
+}
+
+public HttpSession verifySession(HttpServletRequest request)
+{
+    // grant an ongoing session with "active" profile, or null if not logged in
+    return request.getSession(false);
 }
 
 }
