@@ -32,10 +32,15 @@ public class ActivityRepositoryTest {
     }
 
     private Activity setActivityFields(Activity activity, String title, int ageLimit, int capacity) throws Exception {
+        // 'clazz': Gets the runtime class of the Activity object.
         var clazz = activity.getClass();
+        // 'titleField`, `ageLimitField`, `capacityField`: Field objects representing the private fields to be set.
         var titleField = clazz.getDeclaredField("title");
+        // Each field is made accessible and then assigned the provided value.
         titleField.setAccessible(true);
         titleField.set(activity, title);
+        // Although getters and setters are defined in the Activity class, they are private and thus inaccessible from this test class.
+        // Reflection is used here to bypass access control and set up objects for testing when public setters or constructors are not available.
 
         var ageLimitField = clazz.getDeclaredField("ageLimit");
         ageLimitField.setAccessible(true);
