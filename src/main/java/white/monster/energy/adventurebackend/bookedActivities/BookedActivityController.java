@@ -69,7 +69,7 @@ public class BookedActivityController {
         }
     }
 
-    // --- small DTOs for request/response ---
+    // small DTOs for request/response
 
     public record CreateBookedActivityRequest(int bookingId, int activityId) {}
     public record BookedActivityDto(int id, int bookingId, int activityId) {}
@@ -77,6 +77,6 @@ public class BookedActivityController {
                                       LocalDateTime startTime,
                                       LocalDateTime endTime,
                                       int participants,
-                                      java.math.BigDecimal totalPrice,
+                                      Double totalPrice,
                                       String status) {}
 }
