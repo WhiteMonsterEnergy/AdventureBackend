@@ -57,7 +57,7 @@ public class BookedActivityService {
         if (items.isEmpty()) throw new IllegalStateException("Add at least one activity before finalizing");
         if (items.size() > 3) throw new IllegalStateException("Max 3 activities per booking");
 
-        int totalMinutes = 0;
+        long totalMinutes = 0;
         double totalPrice = 0.0;
 
         // calculation: total = (sum of activity prices) × participants
