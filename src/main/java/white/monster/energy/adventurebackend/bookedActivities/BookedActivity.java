@@ -12,11 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "booked_activities",
-        indexes = {
-                @Index(name = "idx_booked_activities_booking", columnList = "booking_id"),
-                @Index(name = "idx_booked_activities_activity", columnList = "activity_id")
-        })
+
 public class BookedActivity {
 
     @Id

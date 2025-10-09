@@ -8,14 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "bookings",
-        indexes = {
-                @Index(name = "idx_bookings_start_time", columnList = "start_time"),
-                @Index(name = "idx_bookings_visitor_id", columnList = "visitor_id"),
-                @Index(name = "idx_bookings_status", columnList = "status")
-        }
-)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,7 +34,7 @@ public class Booking {
     @Column(nullable = false, length = 30)
     private String status;
 
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(nullable = false)
     private Double totalPrice;
 
     @Column(length = 1000)

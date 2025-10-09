@@ -36,31 +36,6 @@ public class BookingService {
         return bookingRepository.findByVisitorId(visitorId);
     }
 
-    @Transactional
-    public Booking confirm(int id) {
-        Booking b = getById(id);
-        if (b == null) return null;
-        b.setStatus("CONFIRMED");
-        b.setHoldExpiresAt(null);
-        return bookingRepository.save(b);
-    }
-
-    @Transactional
-    public Booking cancel(int id) {
-        Booking b = getById(id);
-        if (b == null) return null;
-        b.setStatus("CANCELLED");
-        return bookingRepository.save(b);
-    }
-
-    @Transactional
-    public Booking setHold(int id, LocalDateTime expiresAt) {
-        Booking b = getById(id);
-        if (b == null) return null;
-        b.setStatus("HOLD");
-        b.setHoldExpiresAt(expiresAt);
-        return bookingRepository.save(b);
-    }
     @Transactional(readOnly = true)
     public Page<Booking> findAll(Pageable pageable) {
         return bookingRepository.findAll(pageable);
