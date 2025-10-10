@@ -49,6 +49,10 @@ public void deleteProfileById(int id) {
 }
 
 public Profile updateProfile(Profile profile) {
+        if (profile.getEmployee() != null) {
+            profile.getEmployee().setName(profile.getName());
+            employeeRepository.save(profile.getEmployee());
+        }
         return profileRepository.save(profile);
 }
 
