@@ -91,4 +91,26 @@ public class BookingController {
         boolean ok = service.delete(id);
         return ok ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/assign-employee")
+    public ResponseEntity<?> assignEmployee(
+            @RequestParam int bookingId,
+            @RequestParam int employeeId) {
+        try {
+            Booking updated = service.assignEmployee(bookingId, employeeId);
+            return ResponseEntity.ok(BookingDto.from(updated));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/assigned-to/{employeeId}")
+    public ResponseEntity<List<BookingDto>> getBookingsForEmployee(@PathVariable int employeeId) {
+        List<Booking> bookings = service.getBookingsForEmployee(employeeId);
+        List<BookingDto> dtos = bookings.stream()
+                .map(BookingDto::from)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+
 }

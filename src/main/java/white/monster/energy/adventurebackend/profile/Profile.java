@@ -1,11 +1,10 @@
 package white.monster.energy.adventurebackend.profile;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import white.monster.energy.adventurebackend.employee.Employee;
+
 
 
 @Getter
@@ -21,6 +20,10 @@ private String name;
 private String password;
 private ProfileType type;
 
+    @OneToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
     public Profile(int id, String name, String password, ProfileType type) {
         this.id = id;
         this.name = name;
@@ -31,6 +34,7 @@ private ProfileType type;
 public Profile () {
 
 }
+
 
 
 

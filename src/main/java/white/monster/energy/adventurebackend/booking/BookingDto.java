@@ -2,6 +2,7 @@ package white.monster.energy.adventurebackend.booking;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.*;
+import white.monster.energy.adventurebackend.employee.Employee;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +17,14 @@ public record BookingDto(
         Double totalPrice,
         String notes,
         int visitorId,
-        LocalDateTime holdExpiresAt
+        LocalDateTime holdExpiresAt,
+        Integer assignedEmployeeId,
+        String assignedEmployeeName
 ) {
 
     static BookingDto from(Booking b) {
         int visitorId = (b.getVisitorId() != 0) ? b.getVisitorId() : 0;
+        Employee empl = b.getAssignedEmployee();
         return new BookingDto(
                 b.getId(),
                 b.getType(),
@@ -31,7 +35,10 @@ public record BookingDto(
                 b.getTotalPrice(),
                 b.getNotes(),
                 visitorId,
-                b.getHoldExpiresAt()
+                b.getHoldExpiresAt(),
+                empl != null ? empl.getId() : null,
+                empl != null ? empl.getName() : null
+
         );
     }
 

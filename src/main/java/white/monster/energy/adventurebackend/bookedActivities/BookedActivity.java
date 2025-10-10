@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.booking.Booking;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.time.LocalDateTime;
 
@@ -34,4 +35,8 @@ public class BookedActivity {
     private LocalDateTime endTime;
 
     private Integer participantsForThisActivity;
+
+    @ManyToOne
+    @JoinColumn(name = "operator_id")
+    private Profile assignedOperator;
 }
