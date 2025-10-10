@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import white.monster.energy.adventurebackend.employee.Employee;
+
 
 @Entity
 @Getter
@@ -56,4 +58,9 @@ public class Booking {
 
     @Version
     private long version;
+
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee assignedEmployee;
 }

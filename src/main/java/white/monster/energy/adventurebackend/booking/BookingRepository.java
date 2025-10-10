@@ -17,4 +17,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer>{
 
     Page<Booking> findByStartTimeBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);
 
+    List<Booking> findByAssignedEmployeeId(int employeeId);
+
+
 }
