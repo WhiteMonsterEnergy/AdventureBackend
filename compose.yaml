@@ -6,14 +6,20 @@ services:
     container_name: database
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: kea
-      MYSQL_DATABASE: kea
-      MYSQL_USER: kea
-      MYSQL_PASSWORD: kea
+      MYSQL_ROOT_PASSWORD: axp
+      MYSQL_DATABASE: adventure
+      MYSQL_USER: axp
+      MYSQL_PASSWORD: axp
     ports:
       - "127.0.0.1:3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u axp --password=axp
+      start_period: 5s
+      interval: 1s
+      timeout: 20s
+      retries: 10
 
   backend:
     container_name: backend
@@ -24,11 +30,12 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=mysql
       - DB_DRIVER=com.mysql.cj.jdbc.Driver
-      - dbUrl=jdbc:mysql://mysql:3306/kea
-      - dbUsername=kea
-      - dbPassword=kea
+      - dbUrl=jdbc:mysql://mysql:3306/adventure
+      - dbUsername=axp
+      - dbPassword=axp
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   frontend:
     container_name: frontend
