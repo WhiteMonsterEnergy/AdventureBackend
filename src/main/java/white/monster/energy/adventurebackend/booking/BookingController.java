@@ -71,7 +71,8 @@ public class BookingController {
     // --- CREATE ---
     @PostMapping
     public ResponseEntity<BookingDto> create(@RequestBody BookingDto dto) {
-        Booking created = service.create(dto.toEntity());
+        Booking b = dto.toEntity();
+        Booking created = service.create(b);
         return ResponseEntity.created(URI.create("/api/bookings/" + created.getId()))
                 .body(BookingDto.from(created));
     }
