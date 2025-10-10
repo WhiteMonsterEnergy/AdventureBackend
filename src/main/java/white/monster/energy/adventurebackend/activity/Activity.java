@@ -28,5 +28,7 @@ public class Activity {
     @JsonBackReference
     private Set<EquipmentUse> equipmentUseSet;
 
+    public Activity() {
+    }
 
 }

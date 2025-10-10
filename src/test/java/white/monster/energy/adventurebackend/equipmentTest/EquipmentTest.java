@@ -1,6 +1,7 @@
 package white.monster.energy.adventurebackend.equipmentTest;
 
 import org.junit.jupiter.api.Test;
+import white.monster.energy.adventurebackend.activity.EquipmentUse;
 import white.monster.energy.adventurebackend.equipment.Equipment;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,5 +31,23 @@ public class EquipmentTest {
         assertEquals(10, amount);
         assertEquals(2, broken);
         assertEquals(50.0, cost);
+    }
+    @Test
+    void testEquipmentUseSet() {
+        // Arrange: Create Equipment and EquipmentUse
+        Equipment equipment = new Equipment();
+        EquipmentUse use = new EquipmentUse();
+        use.setEquipment(equipment);
+
+        // Act: Add and remove EquipmentUse from Equipment
+        equipment.getEquipmentUseSet().add(use);
+        boolean containsAfterAdd = equipment.getEquipmentUseSet().contains(use);
+
+        equipment.getEquipmentUseSet().remove(use);
+        boolean containsAfterRemove = equipment.getEquipmentUseSet().contains(use);
+
+        // Assert: Verify set behavior
+        assertTrue(containsAfterAdd);
+        assertFalse(containsAfterRemove);
     }
 }
