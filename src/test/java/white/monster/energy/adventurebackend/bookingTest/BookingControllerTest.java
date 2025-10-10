@@ -47,7 +47,8 @@ public class BookingControllerTest {
         BookingController controller = new BookingController(service);
         BookingDto dto = new BookingDto(
                 0, "ACTIVITY", LocalDateTime.now(), LocalDateTime.now().plusHours(1),
-                1, "DRAFT", 100.0, "notes", 1, null
+                1, "DRAFT", 100.0, "notes", 1, null,
+                null, null // Add dummy values for assignedEmployeeId and assignedEmployeeName
         );
         Method toEntityMethod = BookingDto.class.getDeclaredMethod("toEntity");
         toEntityMethod.setAccessible(true);

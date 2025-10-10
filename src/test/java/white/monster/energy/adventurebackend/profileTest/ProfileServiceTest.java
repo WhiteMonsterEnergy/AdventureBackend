@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import white.monster.energy.adventurebackend.employee.Employee;
+import white.monster.energy.adventurebackend.employee.EmployeeRepository;
 import white.monster.energy.adventurebackend.profile.*;
 
 import java.util.Optional;
@@ -18,6 +20,9 @@ public class ProfileServiceTest {
 
     @Mock
     private ProfileRepository profileRepository;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private ProfileService profileService;
@@ -110,6 +115,7 @@ public class ProfileServiceTest {
         profileService.createProfile(profile);
 
         // Assert
+        verify(employeeRepository).save(any(Employee.class));
         verify(profileRepository).save(profile);
     }
 }

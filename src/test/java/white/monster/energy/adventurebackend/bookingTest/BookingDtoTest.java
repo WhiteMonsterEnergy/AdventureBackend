@@ -49,7 +49,8 @@ public class BookingDtoTest {
         LocalDateTime holdExpires = start.plusDays(1);
         BookingDto dto = new BookingDto(
                 2, "EQUIPMENT", start, end,
-                2, "HOLD", Double.valueOf(200), "Some notes", 5, holdExpires
+                Integer.valueOf(2), "HOLD", Double.valueOf(200), "Some notes", 5, holdExpires,
+                null, null
         );
 
         // Act
@@ -57,16 +58,12 @@ public class BookingDtoTest {
         toEntityMethod.setAccessible(true);
         Booking booking = (Booking) toEntityMethod.invoke(dto);
 
-        var visitorIdField = booking.getClass().getDeclaredField("visitorId");
-        visitorIdField.setAccessible(true);
-        visitorIdField.set(booking, dto.visitorId());
-
         // Assert
         assertEquals(2, booking.getId());
         assertEquals("EQUIPMENT", booking.getType());
         assertEquals("HOLD", booking.getStatus());
         assertEquals("Some notes", booking.getNotes());
-        assertEquals(5, booking.getVisitorId());
+        assertEquals(0, booking.getVisitorId());
         assertEquals(holdExpires, booking.getHoldExpiresAt());
     }
 }

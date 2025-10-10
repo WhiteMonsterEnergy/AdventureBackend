@@ -7,6 +7,7 @@ import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.activity.ActivityRepository;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingService;
+import white.monster.energy.adventurebackend.profile.ProfileRepository;
 
 import java.util.Optional;
 
@@ -20,8 +21,9 @@ public class BookedActivityServiceTest {
         BookedActivityRepository repo = Mockito.mock(BookedActivityRepository.class);
         ActivityRepository activityRepo = Mockito.mock(ActivityRepository.class);
         BookingService bookingService = Mockito.mock(BookingService.class);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
 
-        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService);
+        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService, profileRepository);
 
         Booking booking = new Booking();
         Activity activity = new Activity();
@@ -46,8 +48,9 @@ public class BookedActivityServiceTest {
         BookedActivityRepository repo = Mockito.mock(BookedActivityRepository.class);
         ActivityRepository activityRepo = Mockito.mock(ActivityRepository.class);
         BookingService bookingService = Mockito.mock(BookingService.class);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
 
-        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService);
+        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService, profileRepository);
 
         Mockito.when(bookingService.getById(1)).thenReturn(null);
 
@@ -61,8 +64,9 @@ public class BookedActivityServiceTest {
         BookedActivityRepository repo = Mockito.mock(BookedActivityRepository.class);
         ActivityRepository activityRepo = Mockito.mock(ActivityRepository.class);
         BookingService bookingService = Mockito.mock(BookingService.class);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
 
-        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService);
+        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService, profileRepository);
 
         Booking booking = new Booking();
         Mockito.when(bookingService.getById(1)).thenReturn(booking);
@@ -78,8 +82,9 @@ public class BookedActivityServiceTest {
         BookedActivityRepository repo = Mockito.mock(BookedActivityRepository.class);
         ActivityRepository activityRepo = Mockito.mock(ActivityRepository.class);
         BookingService bookingService = Mockito.mock(BookingService.class);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
 
-        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService);
+        BookedActivityService service = new BookedActivityService(repo, activityRepo, bookingService, profileRepository);
 
         Booking booking = new Booking();
         Mockito.when(bookingService.getById(1)).thenReturn(booking);

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import white.monster.energy.adventurebackend.bookedActivities.*;
 import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.booking.Booking;
+import white.monster.energy.adventurebackend.profile.ProfileRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +19,8 @@ public class BookedActivityControllerTest {
     void testAdd_success() {
         // Arrange
         BookedActivityService service = Mockito.mock(BookedActivityService.class);
-        BookedActivityController controller = new BookedActivityController(service);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
+        BookedActivityController controller = new BookedActivityController(service, profileRepository);
         BookedActivity ba = new BookedActivity();
         Mockito.when(service.addActivityToBooking(10, 20)).thenReturn(ba);
 
@@ -35,7 +37,8 @@ public class BookedActivityControllerTest {
     void testAdd_error() {
         // Arrange
         BookedActivityService service = Mockito.mock(BookedActivityService.class);
-        BookedActivityController controller = new BookedActivityController(service);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
+        BookedActivityController controller = new BookedActivityController(service, profileRepository);
         Mockito.when(service.addActivityToBooking(10, 20)).thenThrow(new IllegalArgumentException("fail"));
 
         // Act
@@ -51,7 +54,8 @@ public class BookedActivityControllerTest {
     void testList() throws Exception {
         // Arrange
         BookedActivityService service = Mockito.mock(BookedActivityService.class);
-        BookedActivityController controller = new BookedActivityController(service);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
+        BookedActivityController controller = new BookedActivityController(service, profileRepository);
         BookedActivity ba = new BookedActivity();
         Activity activity = new Activity();
 
@@ -84,7 +88,8 @@ public class BookedActivityControllerTest {
     void testDelete() {
         // Arrange
         BookedActivityService service = Mockito.mock(BookedActivityService.class);
-        BookedActivityController controller = new BookedActivityController(service);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
+        BookedActivityController controller = new BookedActivityController(service, profileRepository);
 
         // Act
         ResponseEntity<Void> resp = controller.delete(123);
@@ -98,7 +103,8 @@ public class BookedActivityControllerTest {
     void testFinalizeBooking_success() throws Exception {
         // Arrange
         BookedActivityService service = Mockito.mock(BookedActivityService.class);
-        BookedActivityController controller = new BookedActivityController(service);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
+        BookedActivityController controller = new BookedActivityController(service, profileRepository);
         Booking booking = new Booking();
 
         var idField = booking.getClass().getDeclaredField("id");
@@ -134,7 +140,8 @@ public class BookedActivityControllerTest {
     void testFinalizeBooking_error() {
         // Arrange
         BookedActivityService service = Mockito.mock(BookedActivityService.class);
-        BookedActivityController controller = new BookedActivityController(service);
+        ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
+        BookedActivityController controller = new BookedActivityController(service, profileRepository);
 
         Mockito.when(service.finalizeBooking(10, LocalDateTime.of(2025,8,1,10,0), 8))
                 .thenThrow(new IllegalStateException("bad"));

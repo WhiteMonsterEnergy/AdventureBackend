@@ -29,6 +29,7 @@ public class Activity {
     private Set<EquipmentUse> equipmentUseSet;
 
     public Activity() {
+        this.equipmentUseSet = new java.util.HashSet<>();
     }
 
 }
