@@ -14,9 +14,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/** Unit tests for EquipmentUseService. */
 @ExtendWith(MockitoExtension.class)
 public class EquipmentUseServiceTest {
 
+    // Mock dependencies
     @Mock
     private EquipmentUseRepository equipmentUseRepository;
     @Mock
@@ -24,9 +26,11 @@ public class EquipmentUseServiceTest {
     @Mock
     private ActivityRepository activityRepository;
 
+    // Inject mocks into the service being tested
     @InjectMocks
     private EquipmentUseService equipmentUseService;
 
+    /** Test creating an EquipmentUse successfully. */
     @Test
     void testCreateEquipmentUse_Success() {
         // Arrange: Set up valid Equipment, Activity, and EquipmentUse
@@ -39,6 +43,7 @@ public class EquipmentUseServiceTest {
         use.setActivity(activity);
         use.setVisitorsToEach(5);
 
+        // Mock repository responses
         when(activityRepository.existsById(2)).thenReturn(true);
         when(equipmentRepository.existsById(1)).thenReturn(true);
         when(equipmentUseRepository.save(use)).thenReturn(use);
@@ -50,6 +55,7 @@ public class EquipmentUseServiceTest {
         assertEquals(use, result);
     }
 
+    /** Test creating an EquipmentUse with an invalid Activity. */
     @Test
     void testCreateEquipmentUse_InvalidActivity() {
         // Arrange: Set up EquipmentUse with invalid Activity
@@ -62,12 +68,14 @@ public class EquipmentUseServiceTest {
         use.setActivity(activity);
         use.setVisitorsToEach(5);
 
+        // Mock repository to indicate Activity does not exist
         when(activityRepository.existsById(2)).thenReturn(false);
 
         // Act & Assert: Expect exception due to invalid activity
         assertThrows(IllegalArgumentException.class, () -> equipmentUseService.createEquipmentUse(use));
     }
 
+    /** Test creating an EquipmentUse with an invalid Equipment. */
     @Test
     void testCreateEquipmentUse_InvalidEquipment() {
         // Arrange: Set up EquipmentUse with invalid Equipment
@@ -80,6 +88,7 @@ public class EquipmentUseServiceTest {
         use.setActivity(activity);
         use.setVisitorsToEach(5);
 
+        // Mock repository to indicate Equipment does not exist
         when(activityRepository.existsById(2)).thenReturn(true);
         when(equipmentRepository.existsById(1)).thenReturn(false);
 
@@ -87,6 +96,7 @@ public class EquipmentUseServiceTest {
         assertThrows(IllegalArgumentException.class, () -> equipmentUseService.createEquipmentUse(use));
     }
 
+    /** Test creating an EquipmentUse with invalid visitorsToEach. */
     @Test
     void testCreateEquipmentUse_InvalidVisitors() {
         // Arrange: Set up EquipmentUse with invalid visitorsToEach
@@ -99,6 +109,7 @@ public class EquipmentUseServiceTest {
         use.setActivity(activity);
         use.setVisitorsToEach(0);
 
+        // Mock repository to confirm existence of Activity and Equipment
         when(activityRepository.existsById(2)).thenReturn(true);
         when(equipmentRepository.existsById(1)).thenReturn(true);
 
@@ -106,6 +117,7 @@ public class EquipmentUseServiceTest {
         assertThrows(IllegalArgumentException.class, () -> equipmentUseService.createEquipmentUse(use));
     }
 
+    /** Test retrieving all EquipmentUses. */
     @Test
     void testGetAllEquipmentUses() {
         // Arrange: Mock repository to return one EquipmentUse
@@ -119,6 +131,7 @@ public class EquipmentUseServiceTest {
         assertEquals(1, result.size());
     }
 
+    /** Test retrieving EquipmentUses by Activity ID. */
     @Test
     void testGetByActivityId() {
         // Arrange: Mock repository to return EquipmentUse by activityId
@@ -132,6 +145,7 @@ public class EquipmentUseServiceTest {
         assertEquals(1, result.size());
     }
 
+    /** Test retrieving EquipmentUses by Equipment ID. */
     @Test
     void testGetByEquipmentId() {
         // Arrange: Mock repository to return EquipmentUse by equipmentId
@@ -145,10 +159,12 @@ public class EquipmentUseServiceTest {
         assertEquals(1, result.size());
     }
 
+    /** Test deleting an EquipmentUse successfully. */
     @Test
     void testDeleteEquipmentUse_Success() {
         // Arrange: Mock repository to confirm existence
         when(equipmentUseRepository.existsById(10)).thenReturn(true);
+        // Mock delete operation
         doNothing().when(equipmentUseRepository).deleteById(10);
 
         // Act: Call the service method
@@ -158,6 +174,7 @@ public class EquipmentUseServiceTest {
         assertTrue(result);
     }
 
+    /** Test deleting an EquipmentUse that does not exist. */
     @Test
     void testDeleteEquipmentUse_NotFound() {
         // Arrange: Mock repository to indicate non-existence

@@ -7,11 +7,16 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/** Unit tests for the Booking class. */
 public class BookingTest {
 
+    /**
+     * Test setting and getting fields of the Booking class using reflection.
+     * This approach is used to test private fields without modifying the original class.
+     */
     @Test
     void testFieldAssignmentWithReflection() throws Exception {
-        // Arrange
+        // Arrange: Create a Booking instance and set fields via reflection
         Booking booking = new Booking();
         LocalDateTime start = LocalDateTime.of(2025, 8, 1, 10, 0);
         LocalDateTime end = LocalDateTime.of(2025, 8, 1, 12, 0);
@@ -19,6 +24,7 @@ public class BookingTest {
         LocalDateTime updated = LocalDateTime.of(2025, 7, 2, 9, 0);
         LocalDateTime holdExpires = LocalDateTime.of(2025, 7, 1, 10, 0);
 
+        // Use reflection to set private fields because there are no public setters
         var idField = booking.getClass().getDeclaredField("id");
         idField.setAccessible(true);
         idField.set(booking, 123);
@@ -45,7 +51,7 @@ public class BookingTest {
 
         var priceField = booking.getClass().getDeclaredField("totalPrice");
         priceField.setAccessible(true);
-        priceField.set(booking, 99.99); // Use double
+        priceField.set(booking, 99.99);
 
         var notesField = booking.getClass().getDeclaredField("notes");
         notesField.setAccessible(true);
@@ -71,19 +77,32 @@ public class BookingTest {
         versionField.setAccessible(true);
         versionField.set(booking, 7L);
 
-        // Act & Assert
+        // Act & Assert: Verify that getters return the expected values
+        // Check that the getter for 'id' returns the value set via reflection (123)
         assertEquals(123, booking.getId());
+        // Check that the getter for 'type' returns the value set via reflection ("STANDARD")
         assertEquals("STANDARD", booking.getType());
+        // Check that the getter for 'startTime' returns the LocalDateTime value set via reflection (start)
         assertEquals(start, booking.getStartTime());
+        // Check that the getter for 'endTime' returns the LocalDateTime value set via reflection (end)
         assertEquals(end, booking.getEndTime());
+        // Check that the getter for 'participants' returns the value set via reflection (5)
         assertEquals(5, booking.getParticipants());
+        // Check that the getter for 'status' returns the value set via reflection ("CONFIRMED")
         assertEquals("CONFIRMED", booking.getStatus());
+        // Check that the getter for 'totalPrice' returns the value set via reflection (99.99)
         assertEquals(99.99, booking.getTotalPrice());
+        // Check that the getter for 'notes' returns the value set via reflection ("Test notes")
         assertEquals("Test notes", booking.getNotes());
+        // Check that the getter for 'visitorId' returns the value set via reflection (42)
         assertEquals(42, booking.getVisitorId());
+        // Check that the getter for 'holdExpiresAt' returns the LocalDateTime value set via reflection (holdExpires)
         assertEquals(holdExpires, booking.getHoldExpiresAt());
+        // Check that the getter for 'createdAt' returns the LocalDateTime value set via reflection (created)
         assertEquals(created, booking.getCreatedAt());
+        // Check that the getter for 'updatedAt' returns the LocalDateTime value set via reflection (updated)
         assertEquals(updated, booking.getUpdatedAt());
+        // Check that the getter for 'version' returns the value set via reflection (7L)
         assertEquals(7L, booking.getVersion());
     }
 }

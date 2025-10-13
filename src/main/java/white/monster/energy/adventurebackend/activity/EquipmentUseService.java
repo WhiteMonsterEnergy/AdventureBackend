@@ -6,6 +6,7 @@ import white.monster.energy.adventurebackend.equipment.EquipmentRepository;
 
 import java.util.List;
 
+/** Service class for managing EquipmentUse */
 @Service
 public class EquipmentUseService {
 
@@ -13,6 +14,15 @@ public class EquipmentUseService {
     private final EquipmentRepository equipmentRepository;
     private final ActivityRepository activityRepository;
 
+    /** Constructor-based dependency injection */
+    // Using constructor injection for better testability and immutability
+    // Spring will automatically wire the required beans
+    // No need for @Autowired annotation on constructor
+    // All dependencies are marked as final to indicate they are required
+    // This improves code clarity and maintainability
+    // and ensures dependencies cannot be unintentionally changed
+    // Constructor is public to allow instantiation by Spring
+    // No default constructor needed as all dependencies are provided
     public EquipmentUseService(EquipmentUseRepository equipmentUseRepository,
                                EquipmentRepository equipmentRepository,
                                ActivityRepository activityRepository) {
