@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import white.monster.energy.adventurebackend.employee.Employee;
+import white.monster.energy.adventurebackend.employee.EmployeeRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
+
+    private final EmployeeRepository employeeRepository;
 
     @Transactional
     public Booking create(Booking booking) {
@@ -36,31 +40,6 @@ public class BookingService {
         return bookingRepository.findByVisitorId(visitorId);
     }
 
-    @Transactional
-    public Booking confirm(int id) {
-        Booking b = getById(id);
-        if (b == null) return null;
-        b.setStatus("CONFIRMED");
-        b.setHoldExpiresAt(null);
-        return bookingRepository.save(b);
-    }
-
-    @Transactional
-    public Booking cancel(int id) {
-        Booking b = getById(id);
-        if (b == null) return null;
-        b.setStatus("CANCELLED");
-        return bookingRepository.save(b);
-    }
-
-    @Transactional
-    public Booking setHold(int id, LocalDateTime expiresAt) {
-        Booking b = getById(id);
-        if (b == null) return null;
-        b.setStatus("HOLD");
-        b.setHoldExpiresAt(expiresAt);
-        return bookingRepository.save(b);
-    }
     @Transactional(readOnly = true)
     public Page<Booking> findAll(Pageable pageable) {
         return bookingRepository.findAll(pageable);
@@ -103,6 +82,23 @@ public class BookingService {
     @Transactional
     public Booking save(Booking booking) {
         return bookingRepository.save(booking);
+    }
+
+    @Transactional
+    public Booking assignEmployee(int bookingId, int employeeId) {
+        Booking booking = getById(bookingId);
+        if (booking == null) throw new IllegalArgumentException("Booking not found");
+
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
+
+        booking.setAssignedEmployee(employee);
+        return bookingRepository.save(booking);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Booking> getBookingsForEmployee(int employeeId) {
+        return bookingRepository.findByAssignedEmployeeId(employeeId);
     }
 
 }

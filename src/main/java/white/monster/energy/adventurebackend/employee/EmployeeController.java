@@ -12,14 +12,14 @@ public class EmployeeController {
     @Autowired
     private EmployeeRegistrationService registrationService;
 
-    // GET /employees
+    /** GET /employees */
     // Returns a list of all employees
     @GetMapping
     public List<Employee> getAllEmployees() {
         return registrationService.getAllEmployees();
     }
 
-    // POST /employees/register
+    /** POST /employees/register */
     // Registers a new employee using data from the request body
     @PostMapping("/register")
     public Employee registerEmployee(@RequestBody EmployeeRegistrationDto dto) {

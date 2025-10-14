@@ -5,18 +5,15 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import white.monster.energy.adventurebackend.bookedActivities.BookedActivity;
+import white.monster.energy.adventurebackend.employee.Employee;
+
 
 @Entity
-@Table(
-        name = "bookings",
-        indexes = {
-                @Index(name = "idx_bookings_start_time", columnList = "start_time"),
-                @Index(name = "idx_bookings_visitor_id", columnList = "visitor_id"),
-                @Index(name = "idx_bookings_status", columnList = "status")
-        }
-)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,7 +31,7 @@ public class Booking {
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalDateTime endTime;
 
     @Column(nullable = false)
@@ -43,8 +40,8 @@ public class Booking {
     @Column(nullable = false, length = 30)
     private String status;
 
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal totalPrice;
+    @Column(nullable = false)
+    private Double totalPrice;
 
     @Column(length = 1000)
     private String notes;
@@ -65,4 +62,24 @@ public class Booking {
 
     @Version
     private long version;
+
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee assignedEmployee;
+
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookedActivity> bookedActivities = new ArrayList<>();
+
+    public void addBookedActivity(BookedActivity bookedActivity) {
+        bookedActivities.add(bookedActivity);
+        bookedActivity.setBooking(this);
+    }
+
+    public void removeBookedActivity(BookedActivity bookedActivity) {
+        bookedActivities.remove(bookedActivity);
+        bookedActivity.setBooking(null);
+    }
 }
+

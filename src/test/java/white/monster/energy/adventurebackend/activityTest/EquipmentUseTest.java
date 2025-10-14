@@ -7,8 +7,13 @@ import white.monster.energy.adventurebackend.equipment.Equipment;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the EquipmentUse entity.
+ * This test verifies the properties and relationships of the EquipmentUse class.
+ */
 public class EquipmentUseTest {
 
+    /** Test the properties and relationships of EquipmentUse entity */
     @Test
     void testEquipmentUseProperties() {
         // Arrange: Set up entities and relationships

@@ -6,17 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.booking.Booking;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "booked_activities",
-        indexes = {
-                @Index(name = "idx_booked_activities_booking", columnList = "booking_id"),
-                @Index(name = "idx_booked_activities_activity", columnList = "activity_id")
-        })
+
 public class BookedActivity {
 
     @Id
@@ -38,4 +35,8 @@ public class BookedActivity {
     private LocalDateTime endTime;
 
     private Integer participantsForThisActivity;
+
+    @ManyToOne
+    @JoinColumn(name = "operator_id")
+    private Profile assignedOperator;
 }
