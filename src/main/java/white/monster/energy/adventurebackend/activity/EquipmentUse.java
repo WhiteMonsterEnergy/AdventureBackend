@@ -6,6 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import white.monster.energy.adventurebackend.equipment.Equipment;
 
+/**
+ * Entity representing the usage of equipment in an activity.
+ * This class maps to a database table that records how many visitors use each piece of equipment for a specific activity.
+ * It establishes many-to-one relationships with both Activity and Equipment entities.
+ */
 @Getter
 @Setter
 @Entity

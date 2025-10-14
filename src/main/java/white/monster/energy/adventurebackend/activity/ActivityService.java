@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class ActivityService {
 
-    /** Repository layer dependency for database operations related to activities. */
+    // Repository layer dependency for database operations related to activities
     private final ActivityRepository activityRepository;
 
     /** Constructor injection of the repository */

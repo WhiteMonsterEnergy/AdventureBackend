@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/** REST controller for managing EquipmentUse entities */
 @RestController
 @RequestMapping("/api/equipment-use")
 public class EquipmentUseController {

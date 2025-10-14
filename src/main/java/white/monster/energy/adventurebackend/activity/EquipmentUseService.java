@@ -31,7 +31,7 @@ public class EquipmentUseService {
         this.activityRepository = activityRepository;
     }
 
-    // Create a new EquipmentUse record
+    /** Create a new EquipmentUse record */
     @Transactional
     public EquipmentUse createEquipmentUse(EquipmentUse equipmentUse) {
         // Validate that referenced activity exists
@@ -48,32 +48,35 @@ public class EquipmentUseService {
         if (equipmentUse.getVisitorsToEach() <= 0) {
             throw new IllegalArgumentException("Visitors to each must be greater than zero");
         }
-
+        // Save the new equipment use record
         return equipmentUseRepository.save(equipmentUse);
     }
 
-    // Get all equipment uses
+    /** Get all equipment uses */
     public List<EquipmentUse> getAllEquipmentUses() {
         return equipmentUseRepository.findAll();
     }
 
-    // Get all equipment uses by activity
+    /** Get all equipment uses by activity */
     public List<EquipmentUse> getByActivityId(int activityId) {
         return equipmentUseRepository.findByActivityId(activityId);
     }
 
-    // Get all equipment uses by equipment
+    /** Get all equipment uses by equipment */
     public List<EquipmentUse> getByEquipmentId(int equipmentId) {
         return equipmentUseRepository.findByEquipmentId(equipmentId);
     }
 
-    // Delete a specific EquipmentUse record
+    /** Delete a specific EquipmentUse record */
     @Transactional
     public boolean deleteEquipmentUse(int id) {
+        // Check if the equipment use exists before attempting to delete
         if (equipmentUseRepository.existsById(id)) {
+            // If it exists, delete it and return true
             equipmentUseRepository.deleteById(id);
             return true;
         }
+        // If the equipment use does not exist, return false
         return false;
     }
 }

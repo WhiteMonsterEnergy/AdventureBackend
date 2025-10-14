@@ -6,6 +6,6 @@ import java.util.Optional;
 /** Repository interface for Activity entities. */
 public interface ActivityRepository extends JpaRepository<Activity, Integer> {
 
-    /** Find an activity by its title. Used to check for duplicates before creating a new activity. */
+    // Find an activity by its title. Used to check for duplicates before creating a new activity.
     Optional<Activity> findByTitle(String title);
 }

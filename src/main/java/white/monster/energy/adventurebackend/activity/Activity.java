@@ -6,6 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.Set;
 
+/**
+ * Represents an activity in the adventure backend system.
+ * This entity includes details such as title, description, price, age limit, capacity,
+ * minimum duration, and fixed time status. It also maintains a one-to-many relationship
+ * with EquipmentUse, indicating the equipment associated with the activity.
+ */
 @Getter
 @Setter
 @Entity
