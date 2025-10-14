@@ -12,12 +12,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
+/** Unit tests for BookingService. */
 public class BookingServiceTest {
 
+    // Mocked dependencies
     private BookingRepository bookingRepository;
     private EmployeeRepository employeeRepository;
     private BookingService bookingService;
 
+    /** Set up mocks and the service before each test */
     @BeforeEach
     void setUp() {
         // Arrange: Mock dependencies and set up BookingService
@@ -37,6 +40,7 @@ public class BookingServiceTest {
                 .visitorId(1)
                 .build();
 
+        // Mock repository methods
         Mockito.when(bookingRepository.findById(1)).thenReturn(java.util.Optional.of(booking));
         Mockito.when(bookingRepository.save(Mockito.any())).thenReturn(booking);
         Mockito.when(bookingRepository.findAll()).thenReturn(List.of(booking));
@@ -44,6 +48,7 @@ public class BookingServiceTest {
         Mockito.when(bookingRepository.findAll(PageRequest.of(0, 10))).thenReturn(new PageImpl<>(List.of(booking)));
     }
 
+    /** Test creating a new booking */
     @Test
     void testCreateBooking() {
         // Arrange: Build a new Booking object
@@ -64,11 +69,12 @@ public class BookingServiceTest {
         assertEquals("DRAFT", created.getStatus());
     }
 
+    /** Test retrieving a booking by its ID */
     @Test
     void testGetById() {
         // Arrange: ID is set in the mock setup
 
-        // Act:
+        // Act: Get the booking by ID
         Booking found = bookingService.getById(1);
 
         // Assert: Verify the booking was found
@@ -76,6 +82,7 @@ public class BookingServiceTest {
         assertEquals(1, found.getId());
     }
 
+    /** Test listing all bookings with pagination */
     @Test
     void testListByCustomer() {
         // Arrange: ID is set in the mock setup
