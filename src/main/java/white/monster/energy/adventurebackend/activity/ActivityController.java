@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /** REST controller for managing Activity entities. */
+@CrossOrigin
 @RestController
-@RequestMapping("/api/activities")
+@RequestMapping("/api/activity")
 public class ActivityController {
 
     /** Service layer dependency for handling business logic related to activities. */

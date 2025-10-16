@@ -3,7 +3,6 @@ package white.monster.energy.adventurebackend.profile;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import white.monster.energy.adventurebackend.booking.Booking;
@@ -13,8 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @RestController
-@CrossOrigin("*")
+@RequestMapping("/api/profile")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -27,7 +27,7 @@ public class ProfileController {
         this.bookingAccessRepository = bookingAccessRepository;
     }
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<Profile> LoginProfile(@RequestBody Profile profile, HttpServletRequest request)
     {
         profile = profileService.authenticateAndGetProfile(profile.getName(), profile.getPassword());
@@ -44,7 +44,7 @@ public class ProfileController {
     }
 
     /* her skal der lige ændres, så det kun er admin der kan ændre i profiler*/
-    @GetMapping("/profile/edit-profile")
+    @PostMapping("/profile/edit-profile")
     public String showEditProfileForm (@RequestParam int id, @RequestParam(required = false) Boolean succes, HttpSession session, Model model) {
         Integer loggedInId = (Integer) session.getAttribute("id");
         String profileType = (String) session.getAttribute("type");
