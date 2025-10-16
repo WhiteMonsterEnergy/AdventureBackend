@@ -24,8 +24,8 @@ public class BookingController {
         this.service = service;
     }
 
-    // --- LIST (paged) ---
-    // GET /api/bookings?page=0&size=20&status=CONFIRMED&from=2025-10-01T00:00:00&to=2025-10-31T23:59:59
+    // Show a list of bookings.
+    // search by time period or status and see results a few at a time (paged).
     @GetMapping
     public Page<BookingDto> list(
             @RequestParam(defaultValue = "0") int page,
@@ -38,7 +38,7 @@ public class BookingController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        // filtering using service methods
+        // find bookings that match the search
         List<Booking> data;
         long total;
 
@@ -55,12 +55,13 @@ public class BookingController {
             data = p.getContent();
             total = p.getTotalElements();
         }
-
+        // look at each booking one by one. For every booking, run from() to make a BookingDto out of it.
+        // and gather all those BookingDtos and put them back into a list.
         List<BookingDto> dtos = data.stream().map(BookingDto::from).collect(Collectors.toList());
         return new PageImpl<>(dtos, pageable, total);
     }
 
-    // --- GET by id ---
+    // Find a booking by its ID and show it.
     @GetMapping("/{id}")
     public ResponseEntity<BookingDto> get(@PathVariable int id) {
         Booking b = service.getById(id);
@@ -68,7 +69,7 @@ public class BookingController {
                 : ResponseEntity.ok(BookingDto.from(b));
     }
 
-    // --- CREATE ---
+    // Create a new booking and save it.
     @PostMapping
     public ResponseEntity<BookingDto> create(@RequestBody BookingDto dto) {
         Booking created = service.create(dto.toEntity());
@@ -76,7 +77,7 @@ public class BookingController {
                 .body(BookingDto.from(created));
     }
 
-    // --- UPDATE ---
+    // Change a booking that already exists.
     @PatchMapping("/{id}")
     public ResponseEntity<BookingDto> update(@PathVariable int id, @RequestBody BookingDto dto) {
         Booking updated = service.update(id, dto);
@@ -84,7 +85,7 @@ public class BookingController {
                 : ResponseEntity.ok(BookingDto.from(updated));
     }
 
-    // --- DELETE ---
+    // Delete a booking by its ID.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         boolean ok = service.delete(id);
