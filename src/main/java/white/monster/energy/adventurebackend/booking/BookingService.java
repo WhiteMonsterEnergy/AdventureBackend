@@ -19,6 +19,8 @@ public class BookingService {
 
     private final EmployeeRepository employeeRepository;
 
+    // Saves a new booking to the database.
+    // If no status is set, it starts as "DRAFT"
     @Transactional
     public Booking create(Booking booking) {
         if (booking.getStatus() == null) booking.setStatus("DRAFT");
