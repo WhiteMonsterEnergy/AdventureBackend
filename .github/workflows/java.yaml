@@ -1,32 +1,36 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Java CI with Maven
 
-on:
+on: # limit tests to only run where sensible
   push:
-    branches: [ "*","!prod" ]
-  pull_request:
-    branches: [ "dev", "qa" ]
-
-jobs:
+    branches: [ "*","!prod" ] # 'prod' should never recieve direct pushes (and really should test if it did),
+  pull_request:               # but this is how it looks if it is exempt.
+    branches: [ "dev", "qa" ] # other than 'dev' and 'qa', branches don't really recieve pullrequests as they
+                              # are feature-branches, usually just merging 'qa' to keep up-to-date with other
+jobs:                         # *functional* features. (tests on feature branches run each push anyway)
   test:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v5
+
+      # build app for testing
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0 2025-08-11
     - name: Set up JDK 21
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0 2025-08-21
       with:
         java-version: '21'
         distribution: 'temurin'
-        cache: maven
+        cache: maven # this should already cache maven dependencies? cache is certainly visible in action-manager
 
+      # cache maven dependencies (per teacher), to avoid downloading when unchanged
+    - name: Cache Maven dependencies
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0 2025-09-24
+      with:
+        path: ~/.m2/repository
+        key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: maven-${{ runner.os }}-
+
+      # run our defined tests
     - name: Test with Maven
       run: mvn test
