@@ -20,4 +20,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer>{
     // Finds bookings that start within a chosen time range.
     Page<Booking> findByStartTimeBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);
 
+    List<Booking> findByAssignedEmployeeId(int employeeId);
+
+
 }

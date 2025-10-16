@@ -13,15 +13,19 @@ import white.monster.energy.adventurebackend.equipment.Equipment;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/** Unit tests for EquipmentController. */
 @ExtendWith(MockitoExtension.class)
 public class EquipmentControllerTest {
 
+    // Mock the EquipmentService
     @Mock
     private EquipmentService equipmentService;
 
+    // Inject the mocks into EquipmentController
     @InjectMocks
     private EquipmentController equipmentController;
 
+    /** Test the createEquipment method of EquipmentController. */
     @Test
     void testCreateEquipment_Success() {
         // Arrange: Create Equipment and mock service
@@ -31,8 +35,9 @@ public class EquipmentControllerTest {
         // Act: Call controller method
         ResponseEntity<?> response = equipmentController.createEquipment(equipment);
 
-        // Assert: Verify response
+        // Assert: Verify that the HTTP status code is 200 (OK)
         assertEquals(200, response.getStatusCodeValue());
+        // Assert: Verify that the response body contains the same Equipment object that was passed to the controller
         assertEquals(equipment, response.getBody());
     }
 }

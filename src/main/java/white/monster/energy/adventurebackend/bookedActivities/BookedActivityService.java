@@ -7,6 +7,9 @@ import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.activity.ActivityRepository;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingService;
+import white.monster.energy.adventurebackend.profile.Profile;
+import white.monster.energy.adventurebackend.profile.ProfileRepository;
+import white.monster.energy.adventurebackend.profile.ProfileType;
 
 
 import java.time.LocalDateTime;
@@ -19,6 +22,7 @@ public class BookedActivityService {
     private final BookedActivityRepository repo;
     private final ActivityRepository activityRepo;
     private final BookingService bookingService;
+    private final ProfileRepository profileRepository;
 
 
 
@@ -64,7 +68,7 @@ public class BookedActivityService {
         if (items.isEmpty()) throw new IllegalStateException("Add at least one activity before finalizing");
         if (items.size() > 3) throw new IllegalStateException("Max 3 activities per booking");
 
-        int totalMinutes = 0;
+        long totalMinutes = 0;
         double totalPrice = 0.0;
 
         // Add up how long the activities take and how much they cost for all participants
@@ -91,4 +95,38 @@ public class BookedActivityService {
         return bookingService.save(booking);
     }
 
+    @Transactional
+    public BookedActivity assignOperator(int bookedActivityId, int operatorProfileId, int adminProfileId) {
+        Profile admin = profileRepository.findById(adminProfileId)
+                .orElseThrow(() -> new IllegalArgumentException("Admin profile not found"));
+        if (admin.getType() != ProfileType.ADMIN) {
+            throw new IllegalArgumentException("Only admin profiles can assign operators to bookings");
+        }
+        Profile operator = profileRepository.findById(operatorProfileId)
+                .orElseThrow(() -> new IllegalArgumentException("Operator profile not found"));
+        if (operator.getType() != ProfileType.OPERATOR) {
+            throw new IllegalArgumentException("The profile you're trying to assign is not an operator");
+        }
+        BookedActivity bookedActivity = repo.findById(bookedActivityId)
+                .orElseThrow(() -> new IllegalArgumentException("Booked activity not found"));
+        bookedActivity.setAssignedOperator(operator);
+        return repo.save(bookedActivity);
+    }
+
+    @Transactional (readOnly = true)
+    public List<BookedActivity> getAllAssignedActivities(Profile admin) {
+        if (admin.getType() != ProfileType.ADMIN) {
+        throw new IllegalArgumentException("Only admins can view all operator assignments");
+    }
+        return repo.findAll();
+    }
+
+
+    @Transactional (readOnly = true)
+    public List<BookedActivity> getAssignedActivitiesForOperator(Profile operator) {
+if (operator.getType() != ProfileType.OPERATOR) {
+    throw new IllegalArgumentException("You must be an operator to view your assigned booked activites");
+}
+        return repo.findByAssignedOperator(operator);
+    }
 }

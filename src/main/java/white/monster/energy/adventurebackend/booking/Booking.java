@@ -6,6 +6,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import white.monster.energy.adventurebackend.bookedActivities.BookedActivity;
+import white.monster.energy.adventurebackend.employee.Employee;
+
 
 @Entity
 @Getter
@@ -25,7 +31,7 @@ public class Booking {
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalDateTime endTime;
 
     @Column(nullable = false)
@@ -56,4 +62,24 @@ public class Booking {
 
     @Version
     private long version;
+
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee assignedEmployee;
+
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookedActivity> bookedActivities = new ArrayList<>();
+
+    public void addBookedActivity(BookedActivity bookedActivity) {
+        bookedActivities.add(bookedActivity);
+        bookedActivity.setBooking(this);
+    }
+
+    public void removeBookedActivity(BookedActivity bookedActivity) {
+        bookedActivities.remove(bookedActivity);
+        bookedActivity.setBooking(null);
+    }
 }
+

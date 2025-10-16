@@ -1,20 +1,33 @@
 
+# This compose is intended to use for testing of project development,
+# therefore set up to compose local files instead of online repos.
+
 name: AdventureXP
 services:
+
+    # ======= Database ======= #
   mysql:
     image: mysql:latest
     container_name: database
     restart: unless-stopped
+
+    # credentials exposed to git is acceptable as connections are limited to host anyway.
     environment:
-      MYSQL_ROOT_PASSWORD: kea
-      MYSQL_DATABASE: kea
-      MYSQL_USER: kea
-      MYSQL_PASSWORD: kea
+      MYSQL_ROOT_PASSWORD: axp
+      MYSQL_DATABASE: adventureXP
+      MYSQL_USER: axp
+      MYSQL_PASSWORD: axp
     ports:
       - "127.0.0.1:3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
+    # try to connect as backend
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u axp --password=axp
+      retries: 100 # on first setup database may take as long as 60sec to allow connections
+
+    # ======= Backend ======= #
   backend:
     container_name: backend
     build:
@@ -22,14 +35,14 @@ services:
     ports:
       - "127.0.0.1:8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=mysql
-      - DB_DRIVER=com.mysql.cj.jdbc.Driver
-      - dbUrl=jdbc:mysql://mysql:3306/kea
-      - dbUsername=kea
-      - dbPassword=kea
+      - dbUrl=jdbc:mysql://mysql:3306/adventureXP
+      - dbUsername=axp
+      - dbPassword=axp
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy # do not start backend before database will accept connection
 
+    # ======= Frontend ======= #
   frontend:
     container_name: frontend
     build:

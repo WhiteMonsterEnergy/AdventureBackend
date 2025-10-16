@@ -14,15 +14,22 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for EquipmentRepository.
+ * Uses in-memory H2 database for testing.
+ */
 @DataJpaTest
 public class EquipmentRepositoryTest {
 
+    // The repository being tested
     @Autowired
     private EquipmentRepository equipmentRepository;
 
+    // EntityManager for setting up test data
     @Autowired
     private EntityManager entityManager;
 
+    /** Set up test data before each test */
     @BeforeEach
     void setUp() throws Exception {
         // Arrange: Persist test activities (if needed for relationships)
@@ -42,6 +49,7 @@ public class EquipmentRepositoryTest {
         entityManager.flush();
     }
 
+    // Helper methods to set private fields via reflection because there are no public setters
     private Activity setActivityFields(Activity activity, String title, int ageLimit, int capacity) throws Exception {
         var clazz = activity.getClass();
 
@@ -60,6 +68,7 @@ public class EquipmentRepositoryTest {
         return activity;
     }
 
+    // Helper method to set private fields of Equipment
     private Equipment setEquipmentFields(Equipment equipment, String title, int amount, int broken, double cost) throws Exception {
         var clazz = equipment.getClass();
 
@@ -82,32 +91,36 @@ public class EquipmentRepositoryTest {
         return equipment;
     }
 
+    /** Test finding equipment by title */
     @Test
     void testFindByTitle() {
-        // Act
+        // Act: Find equipment by title
         Optional<Equipment> found = equipmentRepository.findByTitle("Helmet");
 
-        // Assert
+        // Assert: Verify that an Equipment entity was found
         assertTrue(found.isPresent());
+        // Verify that the found entity has the expected title
         assertEquals("Helmet", found.get().getTitle());
     }
 
+    /** Test finding equipment with broken count greater than a specified value */
     @Test
     void testFindByBrokenGreaterThan() {
-        // Act
+        // Act: Find equipment with broken count greater than 1
         List<Equipment> result = equipmentRepository.findByBrokenGreaterThan(1);
 
-        // Assert
+        // Assert: Verify that the result contains exactly one entity
         assertEquals(1, result.size());
         assertEquals("Axe", result.get(0).getTitle());
     }
 
+    /** Test finding equipment with amount less than or equal to a specified value */
     @Test
     void testFindByAmountLessThanEqual() {
-        // Act
+        // Act: Find equipment with amount less than or equal to 3
         List<Equipment> result = equipmentRepository.findByAmountLessThanEqual(3);
 
-        // Assert
+        // Assert: Verify that the result contains exactly three entities
         assertEquals(3, result.size());
         assertTrue(result.stream().anyMatch(e -> e.getTitle().equals("Axe")));
         assertTrue(result.stream().anyMatch(e -> e.getTitle().equals("Shield")));
