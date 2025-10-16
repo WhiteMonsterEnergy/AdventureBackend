@@ -27,7 +27,8 @@ public class BookedActivityController {
         this.profileRepository = profileRepository;
     }
 
-    // POST /api/booked-activities  { "bookingId": 12, "activityId": 5 }
+    // adds activity to a booking.
+    // This happens when a visitor chooses an activity to include in their plan.
     @PostMapping
     public ResponseEntity<?> add(@RequestBody CreateBookedActivityRequest req) {
         try {
@@ -38,7 +39,7 @@ public class BookedActivityController {
         }
     }
 
-    // GET /api/booked-activities?bookingId=12
+    // Shows all activities that belong to one booking.
     @GetMapping
     public ResponseEntity<List<BookedActivityDto>> list(@RequestParam int bookingId) {
         List<BookedActivity> items = service.listForBooking(bookingId);
@@ -47,14 +48,15 @@ public class BookedActivityController {
                 .toList());
     }
 
-    // DELETE /api/booked-activities/{id}
+    // Removes one booked activity from a booking
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         service.remove(id);
         return ResponseEntity.noContent().build();
     }
 
-    // POST /api/booked-activities/finalize?bookingId=12&participants=8&start=2025-08-01T10:00:00
+    // Finishes a booking by setting total time, total price, and status.
+    // happens after all activities have been chosen.
     @PostMapping("/finalize")
     public ResponseEntity<?> finalizeBooking(
             @RequestParam int bookingId,
@@ -117,14 +119,17 @@ public class BookedActivityController {
     }
     // small DTOs for request/response
 
+    // helper records for sending and receiving small bits of data.
+
+    // adding a new activity to a booking.
     public record CreateBookedActivityRequest(int bookingId, int activityId) {}
+    // show activities linked to a specific booking.
     public record BookedActivityDto(int id, int bookingId, int activityId) {}
+    // send back the finished booking with its time, price, and status.
     public record FinalizedBookingDto(int id,
                                       LocalDateTime startTime,
                                       LocalDateTime endTime,
                                       int participants,
                                       Double totalPrice,
                                       String status) {}
-
-
 }

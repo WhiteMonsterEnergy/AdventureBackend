@@ -24,6 +24,10 @@ public class BookedActivityService {
     private final BookingService bookingService;
     private final ProfileRepository profileRepository;
 
+
+
+    // Adds one activity to a booking.
+    // also makes sure the booking exists and doesn’t already have too many activities
     @Transactional
     public BookedActivity addActivityToBooking(int bookingId, int activityId) {
         Booking booking = bookingService.getById(bookingId);
@@ -41,17 +45,20 @@ public class BookedActivityService {
         return repo.save(ba);
     }
 
+    // Show all the activities that belong to a single booking
     @Transactional(readOnly = true)
     public List<BookedActivity> listForBooking(int bookingId) {
         return repo.findByBookingId(bookingId);
     }
 
+    // Remove one booked activity by its ID.
     @Transactional
     public void remove(int bookedActivityId) {
         repo.deleteById(bookedActivityId);
     }
 
-
+    // Finish a booking by setting how long it lasts, how much it costs, and how many people join.
+    // adds up the total time and price of all chosen activities.
     @Transactional
     public Booking finalizeBooking(int bookingId, LocalDateTime startTime, int participants) {
         Booking booking = bookingService.getById(bookingId);
@@ -64,7 +71,7 @@ public class BookedActivityService {
         long totalMinutes = 0;
         double totalPrice = 0.0;
 
-        // calculation: total = (sum of activity prices) × participants
+        // Add up how long the activities take and how much they cost for all participants
         for (BookedActivity ba : items) {
             Activity a = ba.getActivity();
             totalMinutes += Math.max(a.getMinimumMinutes(), 0);
@@ -75,16 +82,16 @@ public class BookedActivityService {
             totalPrice += priceForParticipants;
         }
 
-        // update booking info
+        // Update the booking with the new total time, total price, and participant count.
         booking.setStartTime(startTime);
         booking.setEndTime(startTime.plusMinutes(totalMinutes));
         booking.setParticipants(participants);
         booking.setTotalPrice(totalPrice);
-
+        // If the booking has no status yet, set it to “DRAFT”.
         if (booking.getStatus() == null) {
             booking.setStatus("DRAFT");
         }
-
+        // Saves the updated booking and return it.
         return bookingService.save(booking);
     }
 

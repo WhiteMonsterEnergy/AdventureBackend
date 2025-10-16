@@ -19,42 +19,51 @@ public class BookingService {
 
     private final EmployeeRepository employeeRepository;
 
+    // Saves a new booking to the database.
+    // If no status is set, it starts as "DRAFT"
     @Transactional
     public Booking create(Booking booking) {
         if (booking.getStatus() == null) booking.setStatus("DRAFT");
         return bookingRepository.save(booking);
     }
 
+    // Finds one booking by its ID.
     @Transactional(readOnly = true)
     public Booking getById(int id) {
         return bookingRepository.findById(id).orElse(null);
     }
 
+    // Gets a list of all bookings.
     @Transactional(readOnly = true)
     public List<Booking> listAll() {
         return bookingRepository.findAll();
     }
 
+    // Shows all bookings made by one visitor.
     @Transactional(readOnly = true)
     public List<Booking> listByCustomer(int visitorId) {
         return bookingRepository.findByVisitorId(visitorId);
     }
 
+    // Shows bookings a few at a time (paged)
     @Transactional(readOnly = true)
     public Page<Booking> findAll(Pageable pageable) {
         return bookingRepository.findAll(pageable);
     }
 
+    // Finds bookings with a certain status (like DRAFT or CONFIRMED).
     @Transactional(readOnly = true)
     public Page<Booking> findByStatus(String status, Pageable pageable) {
         return bookingRepository.findByStatusIn(List.of(status), pageable);
     }
 
+    // Finds bookings that start within a certain time range.
     @Transactional(readOnly = true)
     public Page<Booking> findByStartTimeBetween(LocalDateTime from, LocalDateTime to, Pageable pageable) {
         return bookingRepository.findByStartTimeBetween(from, to, pageable);
     }
 
+    // Updates a booking by changing its details.
     @Transactional
     public Booking update(int id, BookingDto dto) {
         Booking b = getById(id);
@@ -72,6 +81,7 @@ public class BookingService {
         return bookingRepository.save(b);
     }
 
+    // Deletes a booking by its ID.
     @Transactional
     public boolean delete(int id) {
         if (!bookingRepository.existsById(id)) return false;
@@ -79,6 +89,7 @@ public class BookingService {
         return true;
     }
 
+    // Saves a booking. Used for both new and updated ones
     @Transactional
     public Booking save(Booking booking) {
         return bookingRepository.save(booking);
