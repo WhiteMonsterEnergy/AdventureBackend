@@ -12,6 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/*
+This controller class handles profile-related operations:
+profile login, logout and session management
+profile editing
+admin control of booking access
+profile creation
+*/
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/profile")
@@ -27,6 +36,9 @@ public class ProfileController {
         this.bookingAccessRepository = bookingAccessRepository;
     }
 
+    // handles login and creates a session,
+    // checks if login credentials are correct,
+    // automatically logs out after 20 minutes
     @PostMapping("/login")
     public ResponseEntity<Profile> LoginProfile(@RequestBody Profile profile, HttpServletRequest request)
     {
@@ -35,7 +47,7 @@ public class ProfileController {
         if (profile != null)
         {
             HttpSession session = request.getSession();
-            session.setMaxInactiveInterval(1200);
+            session.setMaxInactiveInterval(1200); // session expires after 20 minutes (1200 seconds)
             session.setAttribute("profile", profile);
             return ResponseEntity.ok(profile);
         }
