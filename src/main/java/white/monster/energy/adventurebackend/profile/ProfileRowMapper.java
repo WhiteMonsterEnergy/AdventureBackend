@@ -5,6 +5,10 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/*
+This class maps rows of a ResultSet to Profile objects
+Technically, this should be redundant when using JPA repositories
+*/
 
 public class ProfileRowMapper implements RowMapper<Profile> {
 @Override
