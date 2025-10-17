@@ -6,6 +6,13 @@ import lombok.Setter;
 import white.monster.energy.adventurebackend.employee.Employee;
 
 
+/*
+this class does the following:
+represents a user profile in the system
+assigns a unique id to each profile
+stores profile information: name, password, type
+*/
+
 
 @Getter
 @Setter
@@ -22,8 +29,10 @@ private ProfileType type;
 
     @OneToOne
     @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private Employee employee; // links to employee - this might be redundant, could maybe be deleted?
 
+
+    // constructor for creating a new profile
     public Profile(int id, String name, String password, ProfileType type) {
         this.id = id;
         this.name = name;
@@ -31,6 +40,7 @@ private ProfileType type;
         this.type = type;
     }
 
+    // default constructor, needed for JPA
 public Profile () {
 
 }

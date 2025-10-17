@@ -12,6 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/*
+This controller class handles profile-related operations:
+profile login, logout and session management
+profile editing
+admin control of booking access
+profile creation
+*/
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/profile")
@@ -27,6 +36,9 @@ public class ProfileController {
         this.bookingAccessRepository = bookingAccessRepository;
     }
 
+    // handles login and creates a session,
+    // checks if login credentials are correct,
+    // automatically logs out after 20 minutes
     @GetMapping("/login")
     public ResponseEntity<Profile> LoginProfile(@RequestBody Profile profile, HttpServletRequest request)
     {
@@ -35,7 +47,7 @@ public class ProfileController {
         if (profile != null)
         {
             HttpSession session = request.getSession();
-            session.setMaxInactiveInterval(1200);
+            session.setMaxInactiveInterval(1200); // session expires after 20 minutes (1200 seconds)
             session.setAttribute("profile", profile);
             return ResponseEntity.ok(profile);
         }
@@ -44,6 +56,7 @@ public class ProfileController {
     }
 
     /* her skal der lige ændres, så det kun er admin der kan ændre i profiler*/
+    // renders edit form for a profile (admin can view/edit all, operators can only view/edit their own)
     @PostMapping("/profile/edit-profile")
     public String showEditProfileForm (@RequestParam int id, @RequestParam(required = false) Boolean succes, HttpSession session, Model model) {
         Integer loggedInId = (Integer) session.getAttribute("id");
@@ -77,6 +90,7 @@ public class ProfileController {
         return "redirect:/access-denied";
     }
 
+    // updates booking access for a profile, only accessible by admin
     @PostMapping("/admin/update-access")
     public String updateProfileAccess(@RequestParam int id, @RequestParam(required = false) List<Integer> bookingIds) {
     bookingAccessRepository.deleteByProfileId(id);
@@ -93,6 +107,7 @@ public class ProfileController {
     return "redirect:/profile/edit-profile?id=" + id + "&succes=true";
     }
 
+    // updates profile information, accessible only by profile owner
     @PostMapping("profile/update")
     public String updateProfile(@RequestParam int id, @RequestParam String name, @RequestParam String password, HttpSession session) {
         Integer loggedinId = (Integer) session.getAttribute("id");
@@ -107,11 +122,14 @@ public class ProfileController {
         return "redirect:/project";
     }
 
+    // renders profile creation form, accessible only by admin
     @GetMapping("/admin/edit-profile-form")
     public String showProfileEditForm(Model model) {
         model.addAttribute("profile", new Profile());
         return "/admin-create-profile";
     }
+
+    // updates profile information, accessible only by admin
     @PostMapping("/admin/update-profile")
     public String updateProfileAsAdmin(@RequestParam int id, @RequestParam String name, @RequestParam String password) {
         Profile profile = profileService.getProfileById(id);
@@ -124,6 +142,7 @@ public class ProfileController {
 
     /*kun admin skal kunne lave profiler*/
     /*sørg for at der er en admin profil hardcoded ind! */
+    // creates a new profile, accessible only by admin
     @PostMapping("/admin/create-profile")
     public String createNewProfile(@RequestParam String name, @RequestParam String password, @RequestParam ProfileType type) {
         Profile profile = new Profile();
@@ -136,6 +155,7 @@ public class ProfileController {
 
     }
 
+    // logs out profile and ends their session
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
