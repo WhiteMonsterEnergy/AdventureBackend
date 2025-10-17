@@ -23,59 +23,70 @@ public class ProfileService {
         this.employeeRepository = employeeRepository;
     }
 
-public Profile createProfile(Profile profile) {
-if (profile.getType() == ProfileType.OPERATOR) {
-    Employee empl = new Employee();
-    empl.setName(profile.getName());
-    empl.setRole(EmployeeRole.OPERATOR);
-    employeeRepository.save(empl);
-    profile.setEmployee(empl);
-} else if (profile.getType() == ProfileType.ADMIN) {
-    Employee empl = new Employee();
-    empl.setName(profile.getName());
-    empl.setRole(EmployeeRole.MANAGER);
-    employeeRepository.save(empl);
-    profile.setEmployee(empl);
-}
-        return profileRepository.save(profile);
-}
-
-public List<Profile> getAllProfiles() {
-        return profileRepository.findAll();
-}
-
-public void deleteProfileById(int id) {
-        profileRepository.deleteById(id);
-}
-
-public Profile updateProfile(Profile profile) {
-        if (profile.getEmployee() != null) {
-            profile.getEmployee().setName(profile.getName());
-            employeeRepository.save(profile.getEmployee());
+    public Profile createProfile(Profile profile) {
+        if (profile.getType() == ProfileType.OPERATOR) {
+            Employee empl = new Employee();
+            empl.setName(profile.getName());
+            empl.setRole(EmployeeRole.OPERATOR);
+            employeeRepository.save(empl);
+            profile.setEmployee(empl);
+        } else if (profile.getType() == ProfileType.ADMIN) {
+            Employee empl = new Employee();
+            empl.setName(profile.getName());
+            empl.setRole(EmployeeRole.MANAGER);
+            employeeRepository.save(empl);
+            profile.setEmployee(empl);
         }
         return profileRepository.save(profile);
-}
+    }
 
-public Profile getProfileById(int id) {
-        return profileRepository.findById(id).orElse(null);
-}
+    public List<Profile> getAllProfiles() {
+            return profileRepository.findAll();
+    }
 
-public Profile authenticateAndGetProfile(String name, String password) {
+    public void deleteProfileById(int id) {
+            profileRepository.deleteById(id);
+    }
+
+    public Profile updateProfile(Profile profile) {
+            if (profile.getEmployee() != null) {
+                profile.getEmployee().setName(profile.getName());
+                employeeRepository.save(profile.getEmployee());
+            }
+            return profileRepository.save(profile);
+    }
+
+    public Profile getProfileById(int id) {
+            return profileRepository.findById(id).orElse(null);
+    }
+
+    public Profile getProfileByName(String name) {
         Optional<Profile> optionalProfile = profileRepository.findByName(name);
         if (optionalProfile.isPresent()) {
             Profile profile = optionalProfile.get();
-            if (profile.getPassword().equals(password)) {
-                return profile;
-            }
+            profile.setPassword(null);
+            return profile;
         }
         return null;
-}
+    }
 
-public HttpSession verifySession(HttpServletRequest request)
-{
-    // grant an ongoing session with "active" profile, or null if not logged in
-    return request.getSession(false);
-}
+    public Profile authenticateAndGetProfile(String name, String password) {
+            Optional<Profile> optionalProfile = profileRepository.findByName(name);
+            if (optionalProfile.isPresent()) {
+                Profile profile = optionalProfile.get();
+                if (profile.getPassword().equals(password)) {
+                    profile.setPassword(null);
+                    return profile;
+                }
+            }
+            return null;
+    }
+
+    public HttpSession verifySession(HttpServletRequest request)
+    {
+        // grant an ongoing session with "active" profile, or null if not logged in
+        return request.getSession(false);
+    }
 
 }
 

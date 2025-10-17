@@ -27,7 +27,7 @@ public class ProfileController {
         this.bookingAccessRepository = bookingAccessRepository;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<Profile> LoginProfile(@RequestBody Profile profile, HttpServletRequest request)
     {
         profile = profileService.authenticateAndGetProfile(profile.getName(), profile.getPassword());
@@ -43,38 +43,12 @@ public class ProfileController {
         return ResponseEntity.notFound().build();
     }
 
-    /* her skal der lige ændres, så det kun er admin der kan ændre i profiler*/
-    @PostMapping("/profile/edit-profile")
-    public String showEditProfileForm (@RequestParam int id, @RequestParam(required = false) Boolean succes, HttpSession session, Model model) {
-        Integer loggedInId = (Integer) session.getAttribute("id");
-        String profileType = (String) session.getAttribute("type");
-        if (loggedInId == null) {
-            return "redirect:/login";
-        }
-
-        if ("ADMIN".equals(profileType)) {
-            List<Profile> profiles = profileService.getAllProfiles();
-    List<Booking> bookings = bookingService.listAll();
-
-            Map<Integer, List<Integer>> profileAccessMap =new HashMap<>();
-            for (Profile profile : profiles) {
-       List<Integer> accessList = bookingAccessRepository.findBookingIdsByProfileId(profile.getId());
-                profileAccessMap.put(profile.getId(), accessList);
-
-            }
-            model.addAttribute("profiles", profiles);
-    model.addAttribute("bookings", bookings);
-            model.addAttribute("profileAccessMap", profileAccessMap);
-            model.addAttribute("succes", succes != null && succes);
-            return "admin-edit-access";
-        }
-        if (loggedInId == id) {
-            Profile profile = profileService.getProfileById(id);
-            model.addAttribute("profile", profile);
-            return "edit-profile";
-        }
-
-        return "redirect:/access-denied";
+    @PostMapping("/id")
+    public ResponseEntity<Profile> getVisitorId(@RequestBody Profile profile, HttpServletRequest request)
+    {
+        Profile existing = profileService.getProfileByName(profile.getName());
+        if (existing == null) existing = profileService.createProfile(profile);
+        return ResponseEntity.ok(existing);
     }
 
     @PostMapping("/admin/update-access")

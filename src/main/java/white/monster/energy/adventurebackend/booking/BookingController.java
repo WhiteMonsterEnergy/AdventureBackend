@@ -71,9 +71,8 @@ public class BookingController {
 
     // Create a new booking and save it.
     @PostMapping
-    public ResponseEntity<BookingDto> create(@RequestBody BookingDto dto) {
-        Booking b = dto.toEntity();
-        Booking created = service.create(b);
+    public ResponseEntity<BookingDto> create(@RequestBody Booking booking) {
+        Booking created = service.create(booking);
         return ResponseEntity.created(URI.create("/api/bookings/" + created.getId()))
                 .body(BookingDto.from(created));
     }

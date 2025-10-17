@@ -86,7 +86,6 @@ public class BookedActivityService {
         booking.setStartTime(startTime);
         booking.setEndTime(startTime.plusMinutes(totalMinutes));
         booking.setParticipants(participants);
-        booking.setTotalPrice(totalPrice);
         // If the booking has no status yet, set it to “DRAFT”.
         if (booking.getStatus() == null) {
             booking.setStatus("DRAFT");

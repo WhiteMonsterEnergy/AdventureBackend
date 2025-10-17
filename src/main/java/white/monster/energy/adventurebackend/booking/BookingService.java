@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import white.monster.energy.adventurebackend.bookedActivities.BookedActivity;
 import white.monster.energy.adventurebackend.employee.Employee;
 import white.monster.energy.adventurebackend.employee.EmployeeRepository;
 
@@ -21,9 +22,18 @@ public class BookingService {
 
     // Saves a new booking to the database.
     // If no status is set, it starts as "DRAFT"
-    @Transactional
     public Booking create(Booking booking) {
-        if (booking.getStatus() == null) booking.setStatus("DRAFT");
+        List<BookedActivity> list = booking.getBookedActivities();
+        booking.setBookedActivities(null);
+        booking = bookingRepository.save(booking);
+
+        for (BookedActivity bookedActivity : list)
+        {
+            bookedActivity.setBooking(booking);
+        }
+
+        booking.setBookedActivities(list);
+
         return bookingRepository.save(booking);
     }
 
@@ -74,7 +84,6 @@ public class BookingService {
         if (dto.endTime() != null) b.setEndTime(dto.endTime());
         if (dto.participants() != null) b.setParticipants(dto.participants());
         if (dto.status() != null) b.setStatus(dto.status());
-        if (dto.totalPrice() != null) b.setTotalPrice(dto.totalPrice());
         if (dto.notes() != null) b.setNotes(dto.notes());
         if (dto.holdExpiresAt() != null) b.setHoldExpiresAt(dto.holdExpiresAt());
 
