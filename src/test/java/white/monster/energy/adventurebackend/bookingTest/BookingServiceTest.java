@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import white.monster.energy.adventurebackend.booking.*;
 import white.monster.energy.adventurebackend.employee.EmployeeRepository;
+import white.monster.energy.adventurebackend.profile.ProfileRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +18,7 @@ public class BookingServiceTest {
 
     // Mocked dependencies
     private BookingRepository bookingRepository;
-    private EmployeeRepository employeeRepository;
+    private ProfileRepository profileRepository;
     private BookingService bookingService;
 
     /** Set up mocks and the service before each test */
@@ -25,8 +26,8 @@ public class BookingServiceTest {
     void setUp() {
         // Arrange: Mock dependencies and set up BookingService
         bookingRepository = Mockito.mock(BookingRepository.class);
-        employeeRepository = Mockito.mock(EmployeeRepository.class);
-        bookingService = new BookingService(bookingRepository, employeeRepository);
+        profileRepository = Mockito.mock(ProfileRepository.class);
+        bookingService = new BookingService(bookingRepository, profileRepository);
 
         // Create a Booking object and configure repository mocks
         Booking booking = Booking.builder()
@@ -36,8 +37,6 @@ public class BookingServiceTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("DRAFT")
-                .totalPrice(100.0)
-                .visitorId(1)
                 .build();
 
         // Mock repository methods
@@ -57,8 +56,6 @@ public class BookingServiceTest {
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
-                .totalPrice(100.0)
-                .visitorId(1)
                 .build();
 
         // Act: Create the booking
