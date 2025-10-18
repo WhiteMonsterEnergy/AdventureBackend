@@ -39,7 +39,7 @@ public class ProfileController {
     // handles login and creates a session,
     // checks if login credentials are correct,
     // automatically logs out after 20 minutes
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<Profile> LoginProfile(@RequestBody Profile profile, HttpServletRequest request)
     {
         profile = profileService.authenticateAndGetProfile(profile.getName(), profile.getPassword());
@@ -55,42 +55,14 @@ public class ProfileController {
         return ResponseEntity.notFound().build();
     }
 
-    /* her skal der lige ændres, så det kun er admin der kan ændre i profiler*/
-    // renders edit form for a profile (admin can view/edit all, operators can only view/edit their own)
-    @PostMapping("/profile/edit-profile")
-    public String showEditProfileForm (@RequestParam int id, @RequestParam(required = false) Boolean succes, HttpSession session, Model model) {
-        Integer loggedInId = (Integer) session.getAttribute("id");
-        String profileType = (String) session.getAttribute("type");
-        if (loggedInId == null) {
-            return "redirect:/login";
-        }
-
-        if ("ADMIN".equals(profileType)) {
-            List<Profile> profiles = profileService.getAllProfiles();
-    List<Booking> bookings = bookingService.listAll();
-
-            Map<Integer, List<Integer>> profileAccessMap =new HashMap<>();
-            for (Profile profile : profiles) {
-       List<Integer> accessList = bookingAccessRepository.findBookingIdsByProfileId(profile.getId());
-                profileAccessMap.put(profile.getId(), accessList);
-
-            }
-            model.addAttribute("profiles", profiles);
-    model.addAttribute("bookings", bookings);
-            model.addAttribute("profileAccessMap", profileAccessMap);
-            model.addAttribute("succes", succes != null && succes);
-            return "admin-edit-access";
-        }
-        if (loggedInId == id) {
-            Profile profile = profileService.getProfileById(id);
-            model.addAttribute("profile", profile);
-            return "edit-profile";
-        }
-
-        return "redirect:/access-denied";
+    @PostMapping("/id")
+    public ResponseEntity<Profile> getVisitorId(@RequestBody Profile profile, HttpServletRequest request)
+    {
+        Profile existing = profileService.getProfileByName(profile.getName());
+        if (existing == null) existing = profileService.createProfile(profile);
+        return ResponseEntity.ok(existing);
     }
 
-    // updates booking access for a profile, only accessible by admin
     @PostMapping("/admin/update-access")
     public String updateProfileAccess(@RequestParam int id, @RequestParam(required = false) List<Integer> bookingIds) {
     bookingAccessRepository.deleteByProfileId(id);
@@ -107,7 +79,6 @@ public class ProfileController {
     return "redirect:/profile/edit-profile?id=" + id + "&succes=true";
     }
 
-    // updates profile information, accessible only by profile owner
     @PostMapping("profile/update")
     public String updateProfile(@RequestParam int id, @RequestParam String name, @RequestParam String password, HttpSession session) {
         Integer loggedinId = (Integer) session.getAttribute("id");
@@ -122,14 +93,11 @@ public class ProfileController {
         return "redirect:/project";
     }
 
-    // renders profile creation form, accessible only by admin
     @GetMapping("/admin/edit-profile-form")
     public String showProfileEditForm(Model model) {
         model.addAttribute("profile", new Profile());
         return "/admin-create-profile";
     }
-
-    // updates profile information, accessible only by admin
     @PostMapping("/admin/update-profile")
     public String updateProfileAsAdmin(@RequestParam int id, @RequestParam String name, @RequestParam String password) {
         Profile profile = profileService.getProfileById(id);
@@ -142,7 +110,6 @@ public class ProfileController {
 
     /*kun admin skal kunne lave profiler*/
     /*sørg for at der er en admin profil hardcoded ind! */
-    // creates a new profile, accessible only by admin
     @PostMapping("/admin/create-profile")
     public String createNewProfile(@RequestParam String name, @RequestParam String password, @RequestParam ProfileType type) {
         Profile profile = new Profile();
@@ -155,7 +122,6 @@ public class ProfileController {
 
     }
 
-    // logs out profile and ends their session
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

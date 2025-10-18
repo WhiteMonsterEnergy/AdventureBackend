@@ -25,39 +25,34 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String type;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time")
     private LocalDateTime startTime;
 
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @Column(nullable = false)
     private Integer participants;
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private String status;
-
-    @Column(nullable = false)
-    private Double totalPrice;
 
     @Column(length = 1000)
     private String notes;
 
-    @Column(name = "visitor_id", nullable = false)
+    @Column(name = "visitor_id")
     private int visitorId;
 
     @Column(name = "hold_expires_at")
     private LocalDateTime holdExpiresAt;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @Version
@@ -70,7 +65,7 @@ public class Booking {
 
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookedActivity> bookedActivities = new ArrayList<>();
+    private List<BookedActivity> bookedActivities;
 
     public void addBookedActivity(BookedActivity bookedActivity) {
         bookedActivities.add(bookedActivity);
@@ -80,6 +75,16 @@ public class Booking {
     public void removeBookedActivity(BookedActivity bookedActivity) {
         bookedActivities.remove(bookedActivity);
         bookedActivity.setBooking(null);
+    }
+
+    public double getTotalPrice()
+    {
+        double price = 0;
+        for (BookedActivity a: bookedActivities)
+        {
+            price += a.getActivity().getPrice() * a.getParticipantsForThisActivity();
+        }
+        return price;
     }
 }
 

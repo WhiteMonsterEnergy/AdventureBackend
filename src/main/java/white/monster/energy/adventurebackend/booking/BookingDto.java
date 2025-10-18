@@ -15,7 +15,6 @@ public record BookingDto(
         LocalDateTime endTime,
         Integer participants,
         String status,
-        Double totalPrice,
         String notes,
         int visitorId,
         LocalDateTime holdExpiresAt,
@@ -33,7 +32,6 @@ public record BookingDto(
                 b.getEndTime(),
                 b.getParticipants(),
                 b.getStatus(),
-                b.getTotalPrice(),
                 b.getNotes(),
                 visitorId,
                 b.getHoldExpiresAt(),
@@ -51,7 +49,6 @@ public record BookingDto(
                 .endTime(endTime)
                 .participants(participants)
                 .status(status)
-                .totalPrice(totalPrice)
                 .notes(notes)
                 .holdExpiresAt(holdExpiresAt);
 

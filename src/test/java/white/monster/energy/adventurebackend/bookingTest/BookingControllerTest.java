@@ -77,7 +77,7 @@ public class BookingControllerTest {
         Mockito.when(service.create(Mockito.any())).thenReturn(booking);
 
         // Act: Call the controller method
-        ResponseEntity<BookingDto> response = controller.create(dto);
+        ResponseEntity<BookingDto> response = controller.create(booking);
 
         // Assert: Verify the response
         // Asserting that the response status code is 201 (Created)
