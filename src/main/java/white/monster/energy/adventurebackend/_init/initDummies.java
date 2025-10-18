@@ -34,7 +34,7 @@ public class initDummies
 
     private void populateProfiles()
     {
-        profileService.createProfile(new Profile("admin", "1234", "tlfNumber", ProfileType.ADMIN));
+        profileService.createProfile(new Profile("admin", "admin", "tlfNumber", ProfileType.ADMIN));
         for (int i = 0; i < 8; i++)
         {
             profileService.createProfile(new Profile(TestingSuite.getName(), "1234", TestingSuite.getPhoneNumber(), ProfileType.OPERATOR));
