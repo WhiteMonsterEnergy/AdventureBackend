@@ -3,6 +3,7 @@ package white.monster.energy.adventurebackend.booking;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.*;
 import white.monster.energy.adventurebackend.employee.Employee;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.time.LocalDateTime;
 
@@ -16,15 +17,13 @@ public record BookingDto(
         Integer participants,
         String status,
         String notes,
-        int visitorId,
-        LocalDateTime holdExpiresAt,
-        Integer assignedEmployeeId,
-        String assignedEmployeeName
+        Profile visitor,
+        Profile operator
 ) {
     // Turns a Booking object into a BookingDto so it can be sent to the frontend.
     static BookingDto from(Booking b) {
-        int visitorId = (b.getVisitorId() != 0) ? b.getVisitorId() : 0;
-        Employee empl = b.getAssignedEmployee();
+        int visitorId = (b.getVisitor().getId() != 0) ? b.getVisitor().getId() : 0;
+        Profile empl = b.getOperator();
         return new BookingDto(
                 b.getId(),
                 b.getType(),
@@ -33,11 +32,8 @@ public record BookingDto(
                 b.getParticipants(),
                 b.getStatus(),
                 b.getNotes(),
-                visitorId,
-                b.getHoldExpiresAt(),
-                empl != null ? empl.getId() : null,
-                empl != null ? empl.getName() : null
-
+                b.getVisitor(),
+                b.getOperator()
         );
     }
     // Turns a BookingDto back into a Booking so it can be saved in the database.
@@ -50,7 +46,8 @@ public record BookingDto(
                 .participants(participants)
                 .status(status)
                 .notes(notes)
-                .holdExpiresAt(holdExpiresAt);
+                .visitor(visitor)
+                .operator(operator);
 
         return bb.build();
     }

@@ -1,10 +1,12 @@
 package white.monster.energy.adventurebackend.profile;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import white.monster.energy.adventurebackend.employee.Employee;
-
 
 /*
 this class does the following:
@@ -13,42 +15,43 @@ assigns a unique id to each profile
 stores profile information: name, password, type
 */
 
-
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Profile
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-private int id;
-private String name;
-private String password;
+    private int id;
+    private String name;
+    private String password;
 
-@Column()
-private ProfileType type;
+    @Column(name = "contact_info", unique = true)
+    private String contactInfo;
+
+    private ProfileType type;
 
     @OneToOne
     @JoinColumn(name = "employee_id")
     private Employee employee; // links to employee - this might be redundant, could maybe be deleted?
 
-
     // constructor for creating a new profile
-    public Profile(int id, String name, String password, ProfileType type) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.type = type;
+    public Profile(String name, String password, String contactInfo, ProfileType type)
+    {
+        this.name        = name;
+        this.type        = type;
+        this.password    = password;
+        this.contactInfo = contactInfo;
     }
 
-    // default constructor, needed for JPA
-public Profile () {
-
-}
-
-
-
-
+    public Profile(String name, String contactInfo)
+    {
+        this.name = name;
+        this.contactInfo = contactInfo;
+        this.type = ProfileType.VISITOR;
+    }
 }
 
