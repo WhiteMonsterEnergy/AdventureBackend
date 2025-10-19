@@ -1,6 +1,7 @@
 package white.monster.energy.adventurebackend.profile;
 
 import jakarta.persistence.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,6 +52,11 @@ public class Profile
         this.name = name;
         this.contactInfo = contactInfo;
         this.type = ProfileType.VISITOR;
+    }
+
+    public static Profile extractProfile(HttpServletRequest request)
+    {
+        return (Profile) request.getSession(false).getAttribute("profile");
     }
 }
 
