@@ -81,23 +81,24 @@ public class initDummies
     {
         List<Activity> activities = activityService.getAllActivities();
 
+        Profile profile;
         Booking booking;
         BookedActivity activity;
 
-        Profile profile;
-
         for (int i = 0; i < 10; i++)
         {
-            profile = new Profile(TestingSuite.getName(), TestingSuite.getPhoneNumber());
-            booking = new Booking();
+            profile  = new Profile(TestingSuite.getName(), TestingSuite.getPhoneNumber());
+            booking  = new Booking();
             activity = new BookedActivity();
+
+            booking.setVisitor(profile);
+            booking.setParticipants(TestingSuite.getInt(1,20));
+            booking.setStartTime(TestingSuite.getTime());
+
+            booking.setBookedActivities(List.of(new BookedActivity[]{activity}));
 
             activity.setBooking(booking);
             activity.setActivity(TestingSuite.oneOf(activities));
-
-            booking.setBookedActivities(List.of(new BookedActivity[]{activity}));
-            booking.setVisitor(profile);
-            booking.setStartTime(TestingSuite.getTime());
 
             bookingService.create(booking);
         }
