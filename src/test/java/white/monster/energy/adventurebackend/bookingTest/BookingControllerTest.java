@@ -1,6 +1,7 @@
 package white.monster.energy.adventurebackend.bookingTest;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,12 @@ public class BookingControllerTest {
         // Mock the service to return the booking when getById is called
         Mockito.when(service.getById(1)).thenReturn(booking);
 
+        // spoof logged in admin
+        Profile profile = new Profile(); profile.setType(ProfileType.ADMIN);
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        Mockito.when(ProfileType.OPERATOR.verifyAccessLevel(request)).thenReturn(true); // spoof logged in operator
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(request.getSession(false)).thenReturn(session);
+        Mockito.when(session.getAttribute("profile")).thenReturn(profile);
 
         // Act: Call the controller method
         ResponseEntity<BookingDto> response = controller.get(1, request);
@@ -105,8 +110,12 @@ public class BookingControllerTest {
         // Mock the service to return a page of bookings when findAll is called
         Mockito.when(service.findAll(PageRequest.of(0, 20))).thenReturn(new PageImpl<>(List.of(booking)));
 
+        // spoof logged in admin
+        Profile profile = new Profile(); profile.setType(ProfileType.ADMIN);
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        Mockito.when(ProfileType.OPERATOR.verifyAccessLevel(request)).thenReturn(true); // spoof logged in operator
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(request.getSession(false)).thenReturn(session);
+        Mockito.when(session.getAttribute("profile")).thenReturn(profile);
 
         // Act: Call the controller method
         var page = controller.list(0, 20, null, null, null, request);
