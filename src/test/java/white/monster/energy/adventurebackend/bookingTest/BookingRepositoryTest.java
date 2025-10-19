@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import jakarta.persistence.EntityManager;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingRepository;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,14 +34,14 @@ public class BookingRepositoryTest {
     @BeforeEach
     void setUp() throws Exception {
         // Arrange: Persist test bookings
-        entityManager.persist(createBooking("ACTIVITY", "CONFIRMED", 1, LocalDateTime.now().minusDays(1), LocalDateTime.now(), BigDecimal.valueOf(100)));
-        entityManager.persist(createBooking("ACTIVITY", "HOLD", 2, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), BigDecimal.valueOf(200)));
-        entityManager.persist(createBooking("ACTIVITY", "CANCELLED", 1, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4), BigDecimal.valueOf(300)));
+        entityManager.persist(createBooking("ACTIVITY", "CONFIRMED", new Profile(), LocalDateTime.now().minusDays(1), LocalDateTime.now(), BigDecimal.valueOf(100)));
+        entityManager.persist(createBooking("ACTIVITY", "HOLD", new Profile(), LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), BigDecimal.valueOf(200)));
+        entityManager.persist(createBooking("ACTIVITY", "CANCELLED", new Profile(), LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4), BigDecimal.valueOf(300)));
         entityManager.flush();
     }
 
     // Helper method to create a Booking instance with specified attributes
-    private Booking createBooking(String type, String status, int visitorId, LocalDateTime start, LocalDateTime end, BigDecimal price) throws Exception {
+    private Booking createBooking(String type, String status, Profile visitor, LocalDateTime start, LocalDateTime end, BigDecimal price) throws Exception {
         Booking b = new Booking();
         var clazz = b.getClass();
 
@@ -52,9 +53,9 @@ public class BookingRepositoryTest {
         statusField.setAccessible(true);
         statusField.set(b, status);
 
-        var visitorIdField = clazz.getDeclaredField("visitorId");
+        var visitorIdField = clazz.getDeclaredField("visitor");
         visitorIdField.setAccessible(true);
-        visitorIdField.set(b, visitorId);
+        visitorIdField.set(b, visitor);
 
         var startTimeField = clazz.getDeclaredField("startTime");
         startTimeField.setAccessible(true);

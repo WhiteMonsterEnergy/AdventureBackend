@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import white.monster.energy.adventurebackend.booking.*;
+import white.monster.energy.adventurebackend.profile.Profile;
 import white.monster.energy.adventurebackend.profile.ProfileType;
 
 import java.lang.reflect.Method;
@@ -64,7 +65,7 @@ public class BookingControllerTest {
                 1, // participants
                 "DRAFT", // status
                 "notes", // notes
-                null, // visitor
+                new Profile(), // visitor
                 null // assignedEmployee
         );
 

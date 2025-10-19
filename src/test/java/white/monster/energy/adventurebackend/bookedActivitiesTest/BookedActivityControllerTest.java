@@ -161,9 +161,6 @@ public class BookedActivityControllerTest {
         var partField = booking.getClass().getDeclaredField("participants");
         partField.setAccessible(true);
         partField.set(booking, 8);
-        var priceField = booking.getClass().getDeclaredField("totalPrice");
-        priceField.setAccessible(true);
-        priceField.set(booking, 123.45); // Use double instead of BigDecimal
         var statusField = booking.getClass().getDeclaredField("status");
         statusField.setAccessible(true);
         statusField.set(booking, "CONFIRMED");
