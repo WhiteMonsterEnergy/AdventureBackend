@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import white.monster.energy.adventurebackend.bookedActivities.BookedActivity;
-import white.monster.energy.adventurebackend.employee.Employee;
 import white.monster.energy.adventurebackend.employee.EmployeeRepository;
+import white.monster.energy.adventurebackend.profile.Profile;
+import white.monster.energy.adventurebackend.profile.ProfileRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,22 +18,14 @@ import java.util.List;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-
-    private final EmployeeRepository employeeRepository;
+    private final ProfileRepository profileRepository;
 
     // Saves a new booking to the database.
-    // If no status is set, it starts as "DRAFT"
-    public Booking create(Booking booking) {
-        List<BookedActivity> list = booking.getBookedActivities();
-        booking.setBookedActivities(null);
-        booking = bookingRepository.save(booking);
-
-        for (BookedActivity bookedActivity : list)
-        {
-            bookedActivity.setBooking(booking);
-        }
-
-        booking.setBookedActivities(list);
+    public Booking create(Booking booking)
+    {
+        // establish data in database in correct order to ensure proper foreign-keying
+        booking.setId(bookingRepository.save(new Booking()).getId()); // "reserve" spot in database for bookedActivities to reference
+        booking.getVisitor().setId(profileRepository.save(booking.getVisitor()).getId()); // todo, get if existing
 
         return bookingRepository.save(booking);
     }
@@ -85,7 +78,6 @@ public class BookingService {
         if (dto.participants() != null) b.setParticipants(dto.participants());
         if (dto.status() != null) b.setStatus(dto.status());
         if (dto.notes() != null) b.setNotes(dto.notes());
-        if (dto.holdExpiresAt() != null) b.setHoldExpiresAt(dto.holdExpiresAt());
 
         return bookingRepository.save(b);
     }
@@ -109,16 +101,16 @@ public class BookingService {
         Booking booking = getById(bookingId);
         if (booking == null) throw new IllegalArgumentException("Booking not found");
 
-        Employee employee = employeeRepository.findById(employeeId)
+        Profile operator = profileRepository.findById(employeeId)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
 
-        booking.setAssignedEmployee(employee);
+        booking.setOperator(operator);
         return bookingRepository.save(booking);
     }
 
     @Transactional(readOnly = true)
     public List<Booking> getBookingsForEmployee(int employeeId) {
-        return bookingRepository.findByAssignedEmployeeId(employeeId);
+        return bookingRepository.findByOperatorId(employeeId);
     }
 
 }

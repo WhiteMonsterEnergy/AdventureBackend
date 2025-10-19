@@ -29,8 +29,6 @@ public class BookingControllerTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("CONFIRMED")
-                .totalPrice(100.0)
-                .visitorId(1)
                 .build();
         // Mock the service to return the booking when getById is called
         Mockito.when(service.getById(1)).thenReturn(booking);
@@ -59,12 +57,9 @@ public class BookingControllerTest {
                 LocalDateTime.now().plusHours(1), // endTime
                 1, // participants
                 "DRAFT", // status
-                100.0, // totalPrice
                 "notes", // notes
-                1, // visitorId
-                null, // assignedEmployeeName
-                null, // activityId
-                null  // packageId
+                null, // visitor
+                null // assignedEmployee
         );
 
         // Use reflection to access the private toEntity method
@@ -99,8 +94,6 @@ public class BookingControllerTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("CONFIRMED")
-                .totalPrice(100.0)
-                .visitorId(1)
                 .build();
         // Mock the service to return a page of bookings when findAll is called
         Mockito.when(service.findAll(PageRequest.of(0, 20))).thenReturn(new PageImpl<>(List.of(booking)));

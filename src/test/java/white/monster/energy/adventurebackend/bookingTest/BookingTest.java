@@ -94,15 +94,9 @@ public class BookingTest {
         assertEquals(99.99, booking.getTotalPrice());
         // Check that the getter for 'notes' returns the value set via reflection ("Test notes")
         assertEquals("Test notes", booking.getNotes());
-        // Check that the getter for 'visitorId' returns the value set via reflection (42)
-        assertEquals(42, booking.getVisitorId());
-        // Check that the getter for 'holdExpiresAt' returns the LocalDateTime value set via reflection (holdExpires)
-        assertEquals(holdExpires, booking.getHoldExpiresAt());
         // Check that the getter for 'createdAt' returns the LocalDateTime value set via reflection (created)
         assertEquals(created, booking.getCreatedAt());
         // Check that the getter for 'updatedAt' returns the LocalDateTime value set via reflection (updated)
         assertEquals(updated, booking.getUpdatedAt());
-        // Check that the getter for 'version' returns the value set via reflection (7L)
-        assertEquals(7L, booking.getVersion());
     }
 }

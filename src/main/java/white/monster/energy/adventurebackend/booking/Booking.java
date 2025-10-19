@@ -11,6 +11,7 @@ import java.util.List;
 
 import white.monster.energy.adventurebackend.bookedActivities.BookedActivity;
 import white.monster.energy.adventurebackend.employee.Employee;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 
 @Entity
@@ -42,12 +43,6 @@ public class Booking {
     @Column(length = 1000)
     private String notes;
 
-    @Column(name = "visitor_id")
-    private int visitorId;
-
-    @Column(name = "hold_expires_at")
-    private LocalDateTime holdExpiresAt;
-
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -55,14 +50,13 @@ public class Booking {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @Version
-    private long version;
-
+    @ManyToOne
+    @JoinColumn(name = "visitor_id")
+    private Profile visitor;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee assignedEmployee;
-
+    @JoinColumn(name = "operator_id")
+    private Profile operator;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookedActivity> bookedActivities;
@@ -76,6 +70,9 @@ public class Booking {
         bookedActivities.remove(bookedActivity);
         bookedActivity.setBooking(null);
     }
+
+    public int operatorId(){return operator.getId();}
+    public int visitorId() {return visitor.getId(); }
 
     public double getTotalPrice()
     {
