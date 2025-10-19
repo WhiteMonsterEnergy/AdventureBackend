@@ -1,11 +1,13 @@
 package white.monster.energy.adventurebackend.bookingTest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import white.monster.energy.adventurebackend.booking.*;
+import white.monster.energy.adventurebackend.profile.ProfileType;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -22,6 +24,7 @@ public class BookingControllerTest {
         // Arrange: Mock the BookingService and set up the controller
         BookingService service = Mockito.mock(BookingService.class);
         BookingController controller = new BookingController(service);
+
         Booking booking = Booking.builder()
                 .id(1)
                 .type("ACTIVITY")
@@ -33,8 +36,11 @@ public class BookingControllerTest {
         // Mock the service to return the booking when getById is called
         Mockito.when(service.getById(1)).thenReturn(booking);
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.OPERATOR.verifyAccessLevel(request)).thenReturn(true); // spoof logged in operator
+
         // Act: Call the controller method
-        ResponseEntity<BookingDto> response = controller.get(1);
+        ResponseEntity<BookingDto> response = controller.get(1, request);
 
         // Assert: Verify the response
         // Asserting that the response status code is 200 (OK)
@@ -98,8 +104,11 @@ public class BookingControllerTest {
         // Mock the service to return a page of bookings when findAll is called
         Mockito.when(service.findAll(PageRequest.of(0, 20))).thenReturn(new PageImpl<>(List.of(booking)));
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.OPERATOR.verifyAccessLevel(request)).thenReturn(true); // spoof logged in operator
+
         // Act: Call the controller method
-        var page = controller.list(0, 20, null, null, null);
+        var page = controller.list(0, 20, null, null, null, request);
 
         // Assert: Verify the response
         // Asserting that the total number of elements in the page is 1

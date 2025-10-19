@@ -26,10 +26,10 @@ public class Profile
 
     private int id;
     private String name;
-    private String password;
 
     @Column(name = "contact_info", unique = true)
     private String contactInfo;
+    private String password;
 
     private ProfileType type;
 
