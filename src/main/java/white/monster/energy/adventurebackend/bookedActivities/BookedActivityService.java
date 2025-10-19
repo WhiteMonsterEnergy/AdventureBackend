@@ -95,12 +95,8 @@ public class BookedActivityService {
     }
 
     @Transactional
-    public BookedActivity assignOperator(int bookedActivityId, int operatorProfileId, int adminProfileId) {
-        Profile admin = profileRepository.findById(adminProfileId)
-                .orElseThrow(() -> new IllegalArgumentException("Admin profile not found"));
-        if (admin.getType() != ProfileType.ADMIN) {
-            throw new IllegalArgumentException("Only admin profiles can assign operators to bookings");
-        }
+    public BookedActivity assignOperator(int bookedActivityId, int operatorProfileId) {
+
         Profile operator = profileRepository.findById(operatorProfileId)
                 .orElseThrow(() -> new IllegalArgumentException("Operator profile not found"));
         if (operator.getType() != ProfileType.OPERATOR) {
