@@ -116,7 +116,36 @@ public class BookedActivityController {
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }@PostMapping("/schedule")
+    public org.springframework.http.ResponseEntity<?> schedule
+            (@RequestParam int bookingId,
+             @RequestParam int activityId,
+             @RequestParam
+             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+             java.time.LocalDateTime start) {
+        try {
+            BookedActivity ba = service.scheduleActivity(bookingId, activityId, start);
+            return org.springframework.http.ResponseEntity.ok(new BookedActivityDto(ba.getId(), bookingId, activityId));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+    @GetMapping("/availability")
+    public org.springframework.http.ResponseEntity<?> availability(
+            @RequestParam int activityId,
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            java.time.LocalDateTime from,
+            @RequestParam(defaultValue = "1440") int horizonMinutes) {
+        try {
+            java.time.LocalDateTime start = service.findFirstAvailableStart(activityId, from, horizonMinutes);
+            return org.springframework.http.ResponseEntity.ok(start);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
     // small DTOs for request/response
 
     // helper records for sending and receiving small bits of data.

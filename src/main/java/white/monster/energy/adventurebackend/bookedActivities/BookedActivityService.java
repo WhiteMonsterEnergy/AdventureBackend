@@ -129,4 +129,67 @@ if (operator.getType() != ProfileType.OPERATOR) {
 }
         return repo.findByAssignedOperator(operator);
     }
+    private java.time.LocalDateTime computeEnd(
+            white.monster.energy.adventurebackend.activity.Activity a, java.time.LocalDateTime start) {
+        int minutes = Math.max(a.getMinimumMinutes(), 0);
+        return start.plusMinutes(minutes);
+    }
+    private void assertActivitySlotFree(
+            int activityId,
+            java.time.LocalDateTime start,
+            java.time.LocalDateTime end) {
+        long clashes = repo.countOverlapsForActivity(activityId, start, end);
+        if (clashes > 0) throw new IllegalStateException("This activity is already booked at that time.");
+    }
+    private void assertOperatorCapacity(
+            java.time.LocalDateTime start,
+            java.time.LocalDateTime end) {
+        long concurrent = repo.countOverlapsAnyActivity(start, end);
+        long operators  = profileRepository.countByType(white.monster.energy.adventurebackend.profile.ProfileType.OPERATOR);
+        if (concurrent >= operators) throw new IllegalStateException("No operators available for that time.");
+    }
+    public java.time.LocalDateTime findFirstAvailableStart(
+            int activityId,
+            java.time.LocalDateTime from, int searchHorizonMinutes) {
+        var activity = activityRepo.findById(activityId)
+                .orElseThrow(() -> new IllegalArgumentException("Activity not found"));
+
+        java.time.LocalDateTime cursor = from;
+        java.time.LocalDateTime limit  = from.plusMinutes(Math.max(searchHorizonMinutes, 1));
+
+        while (!cursor.isAfter(limit)) {
+            java.time.LocalDateTime end = computeEnd(activity, cursor);
+
+            long clashesForActivity = repo.countOverlapsForActivity(activityId, cursor, end);
+            long concurrent         = repo.countOverlapsAnyActivity(cursor, end);
+            long operators          = profileRepository.countByType(white.monster.energy.adventurebackend.profile.ProfileType.OPERATOR);
+
+            if (clashesForActivity == 0 && concurrent < operators) return cursor;
+            cursor = cursor.plusMinutes(15); // steps forward in time by 15 minutes if timeslot not available
+        }
+        throw new IllegalStateException("No available slot in the search window.");
+    }
+    @Transactional
+    public BookedActivity scheduleActivity(
+            int bookingId,
+            int activityId,
+            java.time.LocalDateTime start) {
+        var booking  = bookingService.getById(bookingId);
+        if (booking == null) throw new IllegalArgumentException("Booking not found");
+
+        var activity = activityRepo.findById(activityId)
+                .orElseThrow(() -> new IllegalArgumentException("Activity not found"));
+
+        java.time.LocalDateTime end = computeEnd(activity, start);
+        assertActivitySlotFree(activityId, start, end);
+        assertOperatorCapacity(start, end);
+
+        BookedActivity ba = new BookedActivity();
+        ba.setBooking(booking);
+        ba.setActivity(activity);
+        ba.setStartTime(start);
+        ba.setEndTime(end);
+        return repo.save(ba);
+    }
+
 }
