@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import white.monster.energy.adventurebackend.employee.Employee;
-import white.monster.energy.adventurebackend.employee.EmployeeRepository;
 import white.monster.energy.adventurebackend.profile.*;
 
 import java.util.Optional;
@@ -22,8 +20,6 @@ public class ProfileServiceTest {
     // Mocks for dependencies
     @Mock
     private ProfileRepository profileRepository;
-    @Mock
-    private EmployeeRepository employeeRepository;
 
     // Class under test
     @InjectMocks
@@ -129,8 +125,6 @@ public class ProfileServiceTest {
         // Act: Call the method to create the profile
         profileService.createProfile(profile);
 
-        // Assert: EmployeeRepository's save method should be called with any Employee instance
-        verify(employeeRepository).save(any(Employee.class));
         // ProfileRepository's save method should be called with the provided profile
         verify(profileRepository).save(profile);
 
