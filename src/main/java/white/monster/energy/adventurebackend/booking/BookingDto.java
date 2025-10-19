@@ -2,7 +2,6 @@ package white.monster.energy.adventurebackend.booking;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.lang.*;
-import white.monster.energy.adventurebackend.employee.Employee;
 import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.time.LocalDateTime;
