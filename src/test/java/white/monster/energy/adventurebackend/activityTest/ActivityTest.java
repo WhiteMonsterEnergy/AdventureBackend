@@ -25,8 +25,6 @@ public class ActivityTest {
         activity.setCapacity(20);
         activity.setMinimumMinutes(30);
         activity.setFixedTime(60);
-        // Using a HashSet for equipmentUseSet to avoid that the test fails due to the set being null
-        activity.setEquipmentUseSet(new HashSet<>());
 
         // Assert: Verify that getters return the expected values
         assertEquals(1, activity.getId());
@@ -37,7 +35,5 @@ public class ActivityTest {
         assertEquals(20, activity.getCapacity());
         assertEquals(30, activity.getMinimumMinutes());
         assertEquals(60, activity.getFixedTime());
-        assertNotNull(activity.getEquipmentUseSet());
-        assertTrue(activity.getEquipmentUseSet().isEmpty());
     }
 }
