@@ -39,7 +39,7 @@ public class ProfileTest {
     @Test
     void testAllArgsConstructor() {
         // Arrange & Act: Create a Profile instance using the all-args constructor
-        Profile profile = new Profile(7, "Bob", "hunter2", ProfileType.values()[0]);
+        Profile profile = new Profile(0,"Alice", "password", "phNumber", ProfileType.ADMIN, null);
 
         // Assert: Verify that the fields are set correctly
         // The id should be 7
