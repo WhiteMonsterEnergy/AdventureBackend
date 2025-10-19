@@ -23,34 +23,27 @@ public class TestingSuite
         for (int i = 0; i < 3; i++)
         {
             seed ^= seed >>> rand.nextInt(4,32);
-            seed ^= seed << rand.nextInt(4,32);
+            seed ^= seed <<  rand.nextInt(4,32);
         }
         rand.setSeed(seed);
     }
 
-    static void ascii()
+    static void ascii() // print ASCII table to console, to sort out localization
     {
-        for (int i = 26; i < 256; i++) // print ASCII table
+        for (int i = 26; i < 256; i++)
         {
             System.out.print(i + "\t" + (char)i + " | ");
             if ((i-25) % 10 == 0) System.out.println();
         }
     }
 
-    static int getInt()
-    {
-        return rand.nextInt();
-    }
-
-    static double getDouble()
-    {
-        return rand.nextDouble();
-    }
-
-    static boolean chance(double percent)
-    {
-        return percent > rand.nextDouble()*100;
-    }
+    static int     getInt   ()                       {return rand.nextInt();}
+    static int     getInt   (int bound)              {return rand.nextInt(bound);}
+    static int     getInt   (int min, int max)       {return rand.nextInt(min, max);}
+    static double  getDouble()                       {return rand.nextDouble();}
+    static double  getDouble(double bound)           {return rand.nextDouble(bound);}
+    static double  getDouble(double min, double max) {return rand.nextDouble(min, max);}
+    static boolean chance   (double percent)         {return percent > rand.nextDouble()*100;}
 
     static <T> T oneOf(List<T> objects)
     {
@@ -58,10 +51,7 @@ public class TestingSuite
         return objects.get(rand.nextInt(objects.size()));
     }
 
-    static String getPhoneNumber()
-    {
-        return rand.nextInt(89999999)+10000000+"";
-    }
+    static String getPhoneNumber() {return rand.nextInt(89999999)+10000000+"";}
 
     static LocalDateTime getTime(){return getTime(LocalDateTime.now(),LocalDateTime.now().plusYears(1));}
     static LocalDateTime getTime(LocalDateTime earliest, LocalDateTime latest)
