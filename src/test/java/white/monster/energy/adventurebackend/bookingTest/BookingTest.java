@@ -58,10 +58,6 @@ public class BookingTest {
         visitorIdField.setAccessible(true);
         visitorIdField.set(booking, new Profile());
 
-        var holdExpiresField = booking.getClass().getDeclaredField("holdExpiresAt");
-        holdExpiresField.setAccessible(true);
-        holdExpiresField.set(booking, holdExpires);
-
         var createdAtField = booking.getClass().getDeclaredField("createdAt");
         createdAtField.setAccessible(true);
         createdAtField.set(booking, created);

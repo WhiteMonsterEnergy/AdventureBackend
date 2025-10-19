@@ -9,6 +9,7 @@ import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.profile.ProfileRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -144,6 +145,7 @@ public class BookedActivityControllerTest {
         ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
         BookedActivityController controller = new BookedActivityController(service, profileRepository);
         Booking booking = new Booking();
+        booking.setBookedActivities(new ArrayList<>());
 
         // Use reflection to set private fields of Booking
         // Setting id, startTime, endTime, participants, totalPrice, and status

@@ -34,9 +34,12 @@ public class BookingRepositoryTest {
     @BeforeEach
     void setUp() throws Exception {
         // Arrange: Persist test bookings
-        entityManager.persist(createBooking("ACTIVITY", "CONFIRMED", new Profile(), LocalDateTime.now().minusDays(1), LocalDateTime.now(), BigDecimal.valueOf(100)));
-        entityManager.persist(createBooking("ACTIVITY", "HOLD", new Profile(), LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), BigDecimal.valueOf(200)));
-        entityManager.persist(createBooking("ACTIVITY", "CANCELLED", new Profile(), LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4), BigDecimal.valueOf(300)));
+        Profile profile = new Profile("name","contact");
+
+        entityManager.persist(profile);
+        entityManager.persist(createBooking("ACTIVITY", "CONFIRMED", profile, LocalDateTime.now().minusDays(1), LocalDateTime.now(), BigDecimal.valueOf(100)));
+        entityManager.persist(createBooking("ACTIVITY", "HOLD", profile, LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), BigDecimal.valueOf(200)));
+        entityManager.persist(createBooking("ACTIVITY", "CANCELLED", profile, LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(4), BigDecimal.valueOf(300)));
         entityManager.flush();
     }
 
