@@ -1,0 +1,129 @@
+package white.monster.energy.adventurebackend.bookingTest;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import white.monster.energy.adventurebackend.booking.*;
+import white.monster.energy.adventurebackend.profile.Profile;
+import white.monster.energy.adventurebackend.profile.ProfileType;
+
+import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/** Unit tests for BookingController. */
+public class BookingControllerTest {
+
+    /** Test retrieving a booking by its ID. */
+    @Test
+    void testGetBookingById() {
+        // Arrange: Mock the BookingService and set up the controller
+        BookingService service = Mockito.mock(BookingService.class);
+        BookingController controller = new BookingController(service);
+
+        Booking booking = Booking.builder()
+                .id(1)
+                .type("ACTIVITY")
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusHours(1))
+                .participants(1)
+                .status("CONFIRMED")
+                .build();
+        // Mock the service to return the booking when getById is called
+        Mockito.when(service.getById(1)).thenReturn(booking);
+
+        // spoof logged in admin
+        Profile profile = new Profile(); profile.setType(ProfileType.ADMIN);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(request.getSession(false)).thenReturn(session);
+        Mockito.when(session.getAttribute("profile")).thenReturn(profile);
+
+        // Act: Call the controller method
+        ResponseEntity<BookingDto> response = controller.get(1, request);
+
+        // Assert: Verify the response
+        // Asserting that the response status code is 200 (OK)
+        assertEquals(200, response.getStatusCodeValue());
+        // Asserting that the booking ID in the response body is 1
+        assertEquals(1, response.getBody().id());
+    }
+
+    /** Test creating a new booking. */
+    @Test
+    void testCreateBooking() throws Exception {
+        // Arrange: Create a mock BookingService and initialize the controller with it
+        BookingService service = Mockito.mock(BookingService.class);
+        BookingController controller = new BookingController(service);
+        // Create a BookingDto instance with sample data
+        BookingDto dto = new BookingDto(
+                0, // assignedEmployeeId
+                "ACTIVITY", // type
+                LocalDateTime.now(), // startTime
+                LocalDateTime.now().plusHours(1), // endTime
+                1, // participants
+                "DRAFT", // status
+                "notes", // notes
+                new Profile(), // visitor
+                null // assignedEmployee
+        );
+
+        // Use reflection to access the private toEntity method
+        Method toEntityMethod = BookingDto.class.getDeclaredMethod("toEntity");
+        toEntityMethod.setAccessible(true);
+        Booking booking = (Booking) toEntityMethod.invoke(dto);
+        booking.setId(1);
+
+        //Mock the service to return the booking when create is called
+        Mockito.when(service.create(Mockito.any())).thenReturn(booking);
+
+        // Act: Call the controller method
+        ResponseEntity<BookingDto> response = controller.create(booking);
+
+        // Assert: Verify the response
+        // Asserting that the response status code is 201 (Created)
+        assertEquals(201, response.getStatusCodeValue());
+        // Asserting that the booking ID in the response body is 1
+        assertEquals(1, response.getBody().id());
+    }
+
+    /** Test listing bookings with pagination. */
+    @Test
+    void testListBookings() {
+        // Arrange: Mock the BookingService and set up the controller
+        BookingService service = Mockito.mock(BookingService.class);
+        BookingController controller = new BookingController(service);
+        Booking booking = Booking.builder()
+                .id(1)
+                .type("ACTIVITY")
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusHours(1))
+                .participants(1)
+                .status("CONFIRMED")
+                .build();
+        // Mock the service to return a page of bookings when findAll is called
+        Mockito.when(service.findAll(PageRequest.of(0, 20))).thenReturn(new PageImpl<>(List.of(booking)));
+
+        // spoof logged in admin
+        Profile profile = new Profile(); profile.setType(ProfileType.ADMIN);
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        HttpSession session = Mockito.mock(HttpSession.class);
+        Mockito.when(request.getSession(false)).thenReturn(session);
+        Mockito.when(session.getAttribute("profile")).thenReturn(profile);
+
+        // Act: Call the controller method
+        var page = controller.list(0, 20, null, null, null, request);
+
+        // Assert: Verify the response
+        // Asserting that the total number of elements in the page is 1
+        assertEquals(1, page.getTotalElements());
+        // Asserting that the booking type in the first element of the page content is "ACTIVITY"
+        assertEquals("ACTIVITY", page.getContent().get(0).type());
+    }
+}
