@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import white.monster.energy.adventurebackend.employee.Employee;
 
 /*
@@ -39,7 +38,7 @@ public class Profile
     private Employee employee; // links to employee - this might be redundant, could maybe be deleted?
 
     // constructor for creating a new profile
-    public Profile(String name, String password, String contactInfo, ProfileType type)
+    public Profile(String name, String contactInfo, String password, ProfileType type)
     {
         this.name        = name;
         this.type        = type;
