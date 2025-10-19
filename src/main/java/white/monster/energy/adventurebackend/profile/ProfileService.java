@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/*
+This Service class handles business logic related to Profile entities:
+manages CRUD, authentication, sessions
+*/
 
 @Service
 public class ProfileService {
@@ -16,36 +20,56 @@ public class ProfileService {
     public ProfileService(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
-public Profile createProfile(Profile profile) {
+
+    // creates a profile and links to an employee if profile type is OPERATOR or ADMIN
+    public Profile createProfile(Profile profile) {
         return profileRepository.save(profile);
-}
+    }
 
-public List<Profile> getAllProfiles() {
-        return profileRepository.findAll();
-}
+    // retrieves all profiles
+    public List<Profile> getAllProfiles() {
+            return profileRepository.findAll();
+    }
 
-public void deleteProfileById(int id) {
-        profileRepository.deleteById(id);
-}
+    // deletes profile by id
+    public void deleteProfileById(int id) {
+            profileRepository.deleteById(id);
+    }
 
-public Profile updateProfile(Profile profile) {
-        return profileRepository.save(profile);
-}
+    // updates profile and linked employee name if applicable
+    public Profile updateProfile(Profile profile) {
+            return profileRepository.save(profile);
+    }
 
-public Profile getProfileById(int id) {
-        return profileRepository.findById(id).orElse(null);
-}
+    // retrieves profile by id
+    public Profile getProfileById(int id) {
+            return profileRepository.findById(id).orElse(null);
+    }
 
-public Profile authenticateAndGetProfile(String name, String password) {
+    // retrieves profile by name
+    public Profile getProfileByName(String name) {
+        Optional<Profile> optionalProfile = profileRepository.findByName(name);
+        if (optionalProfile.isPresent()) {
+            Profile profile = optionalProfile.get();
+            profile.setPassword(null);
+            return profile;
+        }
+        return null;
+    }
+
+    // authenticates login credentials and returns profile if valid
+    public Profile authenticateAndGetProfile(String name, String password)
+    {
         Optional<Profile> optionalProfile = profileRepository.findByNameAndPassword(name, password);
-    return optionalProfile.orElse(null);
-}
+        return optionalProfile.orElse(null);
+    }
 
-public HttpSession verifySession(HttpServletRequest request)
-{
-    // grant an ongoing session with "active" profile, or null if not logged in
-    return request.getSession(false);
-}
+    // verifies session and returns HttpSession
+    public HttpSession verifySession(HttpServletRequest request)
+    {
+        // grant an ongoing session with "active" profile, or null if not logged in
+        return request.getSession(false);
+    }
 
 }
 

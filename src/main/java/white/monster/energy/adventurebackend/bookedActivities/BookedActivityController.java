@@ -1,27 +1,39 @@
 package white.monster.energy.adventurebackend.bookedActivities;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import white.monster.energy.adventurebackend.booking.Booking;
+import white.monster.energy.adventurebackend.profile.Profile;
+import white.monster.energy.adventurebackend.profile.ProfileRepository;
+import white.monster.energy.adventurebackend.profile.ProfileType;
+
+
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/booked-activities")
-@CrossOrigin
-public class BookedActivityController {
-
+public class BookedActivityController
+{
     private final BookedActivityService service;
+    private final ProfileRepository profileRepository;
 
-    public BookedActivityController(BookedActivityService service) {
+    public BookedActivityController(BookedActivityService service, ProfileRepository profileRepository)
+    {
         this.service = service;
+        this.profileRepository = profileRepository;
     }
 
-    // POST /api/booked-activities  { "bookingId": 12, "activityId": 5 }
+    // adds activity to a booking.
+    // This happens when a visitor chooses an activity to include in their plan.
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody CreateBookedActivityRequest req) {
+    public ResponseEntity<?> add(@RequestBody CreateBookedActivityRequest req)
+    {
         try {
             BookedActivity saved = service.addActivityToBooking(req.bookingId(), req.activityId());
             return ResponseEntity.ok(new BookedActivityDto(saved.getId(), req.bookingId(), req.activityId()));
@@ -30,30 +42,33 @@ public class BookedActivityController {
         }
     }
 
-    // GET /api/booked-activities?bookingId=12
+    // Shows all activities that belong to one booking.
     @GetMapping
-    public ResponseEntity<List<BookedActivityDto>> list(@RequestParam int bookingId) {
+    public ResponseEntity<List<BookedActivityDto>> list(@RequestParam int bookingId)
+    {
         List<BookedActivity> items = service.listForBooking(bookingId);
         return ResponseEntity.ok(items.stream()
                 .map(i -> new BookedActivityDto(i.getId(), bookingId, i.getActivity().getId()))
                 .toList());
     }
 
-    // DELETE /api/booked-activities/{id}
+    // Removes one booked activity from a booking
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id)
+    {
         service.remove(id);
         return ResponseEntity.noContent().build();
     }
 
-    // POST /api/booked-activities/finalize?bookingId=12&participants=8&start=2025-08-01T10:00:00
+    // Finishes a booking by setting total time, total price, and status.
+    // happens after all activities have been chosen.
     @PostMapping("/finalize")
     public ResponseEntity<?> finalizeBooking(
             @RequestParam int bookingId,
             @RequestParam int participants,
             @RequestParam("start")
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start
-    ) {
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start)
+    {
         try {
             Booking b = service.finalizeBooking(bookingId, start, participants);
             return ResponseEntity.ok().body(new FinalizedBookingDto(
@@ -69,14 +84,100 @@ public class BookedActivityController {
         }
     }
 
+    @GetMapping("/assigned/all")
+    public ResponseEntity<?> getAllAssignments(HttpServletRequest request)
+    {
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        try {
+            Profile operator = Profile.extractProfile(request);
+            List<BookedActivity> all = service.getAllAssignedActivities(operator);
+            return ResponseEntity.ok(all);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/assigned/to/")
+    public ResponseEntity<?> getAssignmentsForOperator(@RequestParam int operatorProfileId, HttpServletRequest request)
+    {
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        try {
+            Profile operator = profileRepository.findById(operatorProfileId)
+                    .orElseThrow(() -> new IllegalArgumentException("Operator profile not found"));
+            List<BookedActivity> myActivities = service.getAssignedActivitiesForOperator(operator);
+            return ResponseEntity.ok(myActivities);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/assign-operator")
+    public ResponseEntity<?>  assignOperator(
+            @RequestParam int bookedActivityId,
+            @RequestParam int operatorProfileId,
+            @RequestParam String profileName,
+            HttpServletRequest request)
+    {
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        try {
+            BookedActivity ba = service.assignOperator(bookedActivityId, operatorProfileId);
+            return ResponseEntity.ok("Operator " + profileName + " was successfully added to to the booking with bookedActivity ID " + ba.getId());
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/schedule")
+    public org.springframework.http.ResponseEntity<?> schedule
+            (@RequestParam int bookingId,
+             @RequestParam int activityId,
+             @RequestParam
+             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+             java.time.LocalDateTime start)
+    {
+        try {
+            BookedActivity ba = service.scheduleActivity(bookingId, activityId, start);
+            return org.springframework.http.ResponseEntity.ok(new BookedActivityDto(ba.getId(), bookingId, activityId));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/availability")
+    public org.springframework.http.ResponseEntity<?> availability(
+            @RequestParam int activityId,
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            java.time.LocalDateTime from,
+            @RequestParam(defaultValue = "1440") int horizonMinutes)
+    {
+        try {
+            java.time.LocalDateTime start = service.findFirstAvailableStart(activityId, from, horizonMinutes);
+            return org.springframework.http.ResponseEntity.ok(start);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
     // small DTOs for request/response
 
+    // helper records for sending and receiving small bits of data.
+
+    // adding a new activity to a booking.
     public record CreateBookedActivityRequest(int bookingId, int activityId) {}
+    // show activities linked to a specific booking.
     public record BookedActivityDto(int id, int bookingId, int activityId) {}
+    // send back the finished booking with its time, price, and status.
     public record FinalizedBookingDto(int id,
                                       LocalDateTime startTime,
                                       LocalDateTime endTime,
                                       int participants,
                                       Double totalPrice,
-                                      String status) {}
+                                      String status)
+    {}
 }
