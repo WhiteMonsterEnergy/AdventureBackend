@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import white.monster.energy.adventurebackend.employee.Employee;
 
 /*
 this class does the following:
@@ -27,16 +26,12 @@ public class Profile
 
     private int id;
     private String name;
-    private String password;
 
     @Column(name = "contact_info", unique = true)
     private String contactInfo;
+    private String password;
 
     private ProfileType type;
-
-    @OneToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee; // links to employee - this might be redundant, could maybe be deleted?
 
     // constructor for creating a new profile
     public Profile(String name, String contactInfo, String password, ProfileType type)

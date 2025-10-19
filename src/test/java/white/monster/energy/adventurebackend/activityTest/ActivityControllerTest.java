@@ -1,14 +1,17 @@
 package white.monster.energy.adventurebackend.activityTest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.activity.ActivityController;
 import white.monster.energy.adventurebackend.activity.ActivityService;
+import white.monster.energy.adventurebackend.profile.ProfileType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -87,8 +90,11 @@ public class ActivityControllerTest {
         // Mock the service to return the activity when created
         when(activityService.createActivity(activity)).thenReturn(activity);
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(true); // spoof logged in admin
+
         // Act: Call the controller method
-        ResponseEntity<?> response = activityController.createActivity(activity);
+        ResponseEntity<?> response = activityController.createActivity(activity, request);
 
         // Assert: Verify the response
         // Check that the status code is 200 OK
@@ -105,8 +111,11 @@ public class ActivityControllerTest {
         // Mock the service to throw an exception when creating the activity
         when(activityService.createActivity(activity)).thenThrow(new IllegalArgumentException("Invalid"));
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(true); // spoof logged in admin
+
         // Act: Call the controller method
-        ResponseEntity<?> response = activityController.createActivity(activity);
+        ResponseEntity<?> response = activityController.createActivity(activity, request);
 
         // Assert: Verify the response
         // Check that the status code is 400 Bad Request
@@ -123,8 +132,11 @@ public class ActivityControllerTest {
         // Mock the service to return the updated activity
         when(activityService.updateActivity(1, activity)).thenReturn(activity);
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(true); // spoof logged in admin
+
         // Act: Call the controller method
-        ResponseEntity<?> response = activityController.updateActivity(1, activity);
+        ResponseEntity<?> response = activityController.updateActivity(1, activity, request);
 
         // Assert: Verify the response
         // Check that the status code is 200 OK
@@ -141,8 +153,11 @@ public class ActivityControllerTest {
         // Mock the service to throw an exception when updating the activity
         when(activityService.updateActivity(1, activity)).thenThrow(new IllegalStateException("Update failed"));
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(true); // spoof logged in admin
+
         // Act: Call the controller method
-        ResponseEntity<?> response = activityController.updateActivity(1, activity);
+        ResponseEntity<?> response = activityController.updateActivity(1, activity, request);
 
         // Assert: Verify the response
         // Check that the status code is 400 Bad Request
@@ -157,8 +172,11 @@ public class ActivityControllerTest {
         // Arrange: Set up mock behavior
         when(activityService.deleteActivity(1)).thenReturn(true);
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(true); // spoof logged in admin
+
         // Act: Call the controller method
-        ResponseEntity<?> response = activityController.deleteActivity(1);
+        ResponseEntity<?> response = activityController.deleteActivity(1, request);
 
         // Assert: Verify the response
         // Check that the status code is 204 No Content
@@ -173,8 +191,11 @@ public class ActivityControllerTest {
         // Arrange: Set up mock behavior
         when(activityService.deleteActivity(1)).thenReturn(false);
 
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(true); // spoof logged in admin
+
         // Act: Call the controller method
-        ResponseEntity<?> response = activityController.deleteActivity(1);
+        ResponseEntity<?> response = activityController.deleteActivity(1, request);
 
         // Assert: Verify the response
         // Check that the status code is 404 Not Found

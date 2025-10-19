@@ -40,7 +40,7 @@ public class BookingController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
             HttpServletRequest request
     ) {
-//        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return Page.empty();
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -70,7 +70,7 @@ public class BookingController {
     // Find a booking by its ID and show it.
     @GetMapping("/{id}")
     public ResponseEntity<BookingDto> get(@PathVariable int id, HttpServletRequest request) {
-        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
         Booking b = service.getById(id);
         return (b == null) ? ResponseEntity.notFound().build()
