@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.*;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -24,8 +25,6 @@ public class BookingController {
         this.service = service;
     }
 
-    // Show a list of bookings.
-    // search by time period or status and see results a few at a time (paged).
     @GetMapping
     public Page<BookingDto> list(
             @RequestParam(defaultValue = "0") int page,
@@ -38,7 +37,6 @@ public class BookingController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        // find bookings that match the search
         List<Booking> data;
         long total;
 
@@ -55,13 +53,11 @@ public class BookingController {
             data = p.getContent();
             total = p.getTotalElements();
         }
-        // look at each booking one by one. For every booking, run from() to make a BookingDto out of it.
-        // and gather all those BookingDtos and put them back into a list.
+
         List<BookingDto> dtos = data.stream().map(BookingDto::from).collect(Collectors.toList());
         return new PageImpl<>(dtos, pageable, total);
     }
 
-    // Find a booking by its ID and show it.
     @GetMapping("/{id}")
     public ResponseEntity<BookingDto> get(@PathVariable int id) {
         Booking b = service.getById(id);
@@ -69,15 +65,27 @@ public class BookingController {
                 : ResponseEntity.ok(BookingDto.from(b));
     }
 
-    // Create a new booking and save it.
     @PostMapping
     public ResponseEntity<BookingDto> create(@RequestBody Booking booking) {
+        if (booking.getBookedActivities() == null || booking.getBookedActivities().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (booking.getBookedActivities().size() > 10) {
+            return ResponseEntity.badRequest().build();
+        }
+        Set<Integer> distinct = booking.getBookedActivities().stream()
+                .map(ba -> ba.getActivity() != null ? ba.getActivity().getId() : null)
+                .filter(id -> id != null)
+                .collect(Collectors.toSet());
+        if (distinct.size() != booking.getBookedActivities().size()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Booking created = service.create(booking);
         return ResponseEntity.created(URI.create("/api/bookings/" + created.getId()))
                 .body(BookingDto.from(created));
     }
 
-    // Change a booking that already exists.
     @PatchMapping("/{id}")
     public ResponseEntity<BookingDto> update(@PathVariable int id, @RequestBody BookingDto dto) {
         Booking updated = service.update(id, dto);
@@ -85,7 +93,6 @@ public class BookingController {
                 : ResponseEntity.ok(BookingDto.from(updated));
     }
 
-    // Delete a booking by its ID.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         boolean ok = service.delete(id);
@@ -112,5 +119,4 @@ public class BookingController {
                 .toList();
         return ResponseEntity.ok(dtos);
     }
-
 }
