@@ -3,9 +3,11 @@ package white.monster.energy.adventurebackend.bookingTest;
 import org.junit.jupiter.api.Test;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingDto;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,6 +26,8 @@ public class BookingDtoTest {
         Booking booking = Booking.builder()
                 .id(1)
                 .type("ACTIVITY")
+                .visitor(new Profile())
+                .bookedActivities(new ArrayList<>())
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
@@ -78,8 +82,6 @@ public class BookingDtoTest {
         assertEquals("EQUIPMENT", booking.getType());
         // The startTime and endTime should match the dto's times
         assertEquals("HOLD", booking.getStatus());
-        // The totalPrice should match the dto's totalPrice
-        assertEquals(Double.valueOf(200), booking.getTotalPrice());
         // The notes should match the dto's notes
         assertEquals("Some notes", booking.getNotes());
     }

@@ -112,7 +112,7 @@ public class ActivityControllerTest {
         when(activityService.createActivity(activity)).thenThrow(new IllegalArgumentException("Invalid"));
 
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(true); // spoof logged in admin
+        Mockito.when(ProfileType.ADMIN.verifyAccessLevel(request)).thenReturn(false); // spoof logged in admin
 
         // Act: Call the controller method
         ResponseEntity<?> response = activityController.createActivity(activity, request);

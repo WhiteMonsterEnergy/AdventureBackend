@@ -51,6 +51,6 @@ public class ProfileTest {
         // The password should be "hunter2"
         assertEquals("hunter2", profile.getPassword());
         // The profile type should be the first value in ProfileType enum
-        assertEquals(ProfileType.values()[0], profile.getType());
+        assertEquals(ProfileType.ADMIN, profile.getType());
     }
 }
