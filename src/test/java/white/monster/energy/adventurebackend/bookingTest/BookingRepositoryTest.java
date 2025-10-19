@@ -69,10 +69,6 @@ public class BookingRepositoryTest {
         participantsField.setAccessible(true);
         participantsField.set(b, 1);
 
-        var totalPriceField = clazz.getDeclaredField("totalPrice");
-        totalPriceField.setAccessible(true);
-        totalPriceField.set(b, price.doubleValue());
-
         return b;
     }
 
