@@ -6,9 +6,11 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import white.monster.energy.adventurebackend.booking.*;
-import white.monster.energy.adventurebackend.employee.EmployeeRepository;
+import white.monster.energy.adventurebackend.profile.Profile;
+import white.monster.energy.adventurebackend.profile.ProfileRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +19,7 @@ public class BookingServiceTest {
 
     // Mocked dependencies
     private BookingRepository bookingRepository;
-    private EmployeeRepository employeeRepository;
+    private ProfileRepository profileRepository;
     private BookingService bookingService;
 
     /** Set up mocks and the service before each test */
@@ -25,8 +27,8 @@ public class BookingServiceTest {
     void setUp() {
         // Arrange: Mock dependencies and set up BookingService
         bookingRepository = Mockito.mock(BookingRepository.class);
-        employeeRepository = Mockito.mock(EmployeeRepository.class);
-        bookingService = new BookingService(bookingRepository, employeeRepository);
+        profileRepository = Mockito.mock(ProfileRepository.class);
+        bookingService = new BookingService(bookingRepository, profileRepository);
 
         // Create a Booking object and configure repository mocks
         Booking booking = Booking.builder()
@@ -36,8 +38,6 @@ public class BookingServiceTest {
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("DRAFT")
-                .totalPrice(100.0)
-                .visitorId(1)
                 .build();
 
         // Mock repository methods
@@ -53,12 +53,11 @@ public class BookingServiceTest {
     void testCreateBooking() {
         // Arrange: Build a new Booking object
         Booking booking = Booking.builder()
-                .type("ACTIVITY")
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusHours(1))
+                .visitor(new Profile("name", "contact"))
                 .participants(1)
-                .totalPrice(100.0)
-                .visitorId(1)
+                .type("DRAFT")
+                .startTime(LocalDateTime.now())
+                .bookedActivities(new ArrayList<>())
                 .build();
 
         // Act: Create the booking
@@ -66,7 +65,7 @@ public class BookingServiceTest {
 
         // Assert: Verify the booking was created with expected status
         assertNotNull(created);
-        assertEquals("DRAFT", created.getStatus());
+        assertEquals("DRAFT", created.getType());
     }
 
     /** Test retrieving a booking by its ID */

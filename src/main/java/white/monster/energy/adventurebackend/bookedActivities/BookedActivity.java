@@ -20,14 +20,12 @@ public class BookedActivity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "booking_id", nullable = false)
-    @JsonIgnore
+    @ManyToOne()
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "activity_id", nullable = false)
-    @JsonIgnore
+    @ManyToOne()
+    @JoinColumn(name = "activity_id")
     private Activity activity;
 
 

@@ -3,9 +3,11 @@ package white.monster.energy.adventurebackend.bookingTest;
 import org.junit.jupiter.api.Test;
 import white.monster.energy.adventurebackend.booking.Booking;
 import white.monster.energy.adventurebackend.booking.BookingDto;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,14 +26,13 @@ public class BookingDtoTest {
         Booking booking = Booking.builder()
                 .id(1)
                 .type("ACTIVITY")
+                .visitor(new Profile())
+                .bookedActivities(new ArrayList<>())
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(1))
                 .participants(1)
                 .status("CONFIRMED")
-                .totalPrice(Double.valueOf(100))
-                .visitorId(1)
                 .notes("Test notes")
-                .holdExpiresAt(LocalDateTime.now().plusDays(1))
                 .build();
 
         // Act: Use reflection to access the private static 'from' method
@@ -50,10 +51,6 @@ public class BookingDtoTest {
         assertEquals("CONFIRMED", dto.status());
         // The totalPrice should match the booking's totalPrice
         assertEquals("Test notes", dto.notes());
-        // The visitorId should be 0 as per the original mapping logic
-        assertEquals(1, dto.visitorId());
-        // The DTO's holdExpiresAt should not be null and should match the Booking's holdExpiresAt
-        assertNotNull(dto.holdExpiresAt());
     }
 
     /** Testing the private method 'toEntity' that converts a BookingDto back to a Booking entity.
@@ -67,8 +64,8 @@ public class BookingDtoTest {
         LocalDateTime holdExpires = start.plusDays(1);
         BookingDto dto = new BookingDto(
                 2, "EQUIPMENT", start, end,
-                Integer.valueOf(2), "HOLD", Double.valueOf(200), "Some notes", 5, holdExpires,
-                null, null
+                Integer.valueOf(2), "HOLD", "Some notes", null,
+                null
         );
 
         // Act: Use reflection to access the private 'toEntity' method
@@ -85,13 +82,7 @@ public class BookingDtoTest {
         assertEquals("EQUIPMENT", booking.getType());
         // The startTime and endTime should match the dto's times
         assertEquals("HOLD", booking.getStatus());
-        // The totalPrice should match the dto's totalPrice
-        assertEquals(Double.valueOf(200), booking.getTotalPrice());
         // The notes should match the dto's notes
         assertEquals("Some notes", booking.getNotes());
-        // The visitorId should be 0 as per the original mapping logic
-        assertEquals(0, booking.getVisitorId());
-        // The Booking's holdExpiresAt should not be null and should match the DTO's holdExpiresAt
-        assertEquals(holdExpires, booking.getHoldExpiresAt());
     }
 }

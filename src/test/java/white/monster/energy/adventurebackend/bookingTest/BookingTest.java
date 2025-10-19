@@ -2,6 +2,7 @@ package white.monster.energy.adventurebackend.bookingTest;
 
 import org.junit.jupiter.api.Test;
 import white.monster.energy.adventurebackend.booking.Booking;
+import white.monster.energy.adventurebackend.profile.Profile;
 
 import java.time.LocalDateTime;
 
@@ -49,21 +50,13 @@ public class BookingTest {
         statusField.setAccessible(true);
         statusField.set(booking, "CONFIRMED");
 
-        var priceField = booking.getClass().getDeclaredField("totalPrice");
-        priceField.setAccessible(true);
-        priceField.set(booking, 99.99);
-
         var notesField = booking.getClass().getDeclaredField("notes");
         notesField.setAccessible(true);
         notesField.set(booking, "Test notes");
 
-        var visitorIdField = booking.getClass().getDeclaredField("visitorId");
+        var visitorIdField = booking.getClass().getDeclaredField("visitor");
         visitorIdField.setAccessible(true);
-        visitorIdField.set(booking, 42);
-
-        var holdExpiresField = booking.getClass().getDeclaredField("holdExpiresAt");
-        holdExpiresField.setAccessible(true);
-        holdExpiresField.set(booking, holdExpires);
+        visitorIdField.set(booking, new Profile());
 
         var createdAtField = booking.getClass().getDeclaredField("createdAt");
         createdAtField.setAccessible(true);
@@ -72,10 +65,6 @@ public class BookingTest {
         var updatedAtField = booking.getClass().getDeclaredField("updatedAt");
         updatedAtField.setAccessible(true);
         updatedAtField.set(booking, updated);
-
-        var versionField = booking.getClass().getDeclaredField("version");
-        versionField.setAccessible(true);
-        versionField.set(booking, 7L);
 
         // Act & Assert: Verify that getters return the expected values
         // Check that the getter for 'id' returns the value set via reflection (123)
@@ -90,19 +79,11 @@ public class BookingTest {
         assertEquals(5, booking.getParticipants());
         // Check that the getter for 'status' returns the value set via reflection ("CONFIRMED")
         assertEquals("CONFIRMED", booking.getStatus());
-        // Check that the getter for 'totalPrice' returns the value set via reflection (99.99)
-        assertEquals(99.99, booking.getTotalPrice());
         // Check that the getter for 'notes' returns the value set via reflection ("Test notes")
         assertEquals("Test notes", booking.getNotes());
-        // Check that the getter for 'visitorId' returns the value set via reflection (42)
-        assertEquals(42, booking.getVisitorId());
-        // Check that the getter for 'holdExpiresAt' returns the LocalDateTime value set via reflection (holdExpires)
-        assertEquals(holdExpires, booking.getHoldExpiresAt());
         // Check that the getter for 'createdAt' returns the LocalDateTime value set via reflection (created)
         assertEquals(created, booking.getCreatedAt());
         // Check that the getter for 'updatedAt' returns the LocalDateTime value set via reflection (updated)
         assertEquals(updated, booking.getUpdatedAt());
-        // Check that the getter for 'version' returns the value set via reflection (7L)
-        assertEquals(7L, booking.getVersion());
     }
 }

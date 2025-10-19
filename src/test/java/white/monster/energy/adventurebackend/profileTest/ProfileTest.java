@@ -39,7 +39,7 @@ public class ProfileTest {
     @Test
     void testAllArgsConstructor() {
         // Arrange & Act: Create a Profile instance using the all-args constructor
-        Profile profile = new Profile(7, "Bob", "hunter2", ProfileType.values()[0]);
+        Profile profile = new Profile(7,"Bob", "phone1", "hunter2", ProfileType.ADMIN);
 
         // Assert: Verify that the fields are set correctly
         // The id should be 7
@@ -47,8 +47,10 @@ public class ProfileTest {
         // The name should be "Bob"
         assertEquals("Bob", profile.getName());
         // The password should be "hunter2"
+        assertEquals("phone1", profile.getContactInfo());
+        // The password should be "hunter2"
         assertEquals("hunter2", profile.getPassword());
         // The profile type should be the first value in ProfileType enum
-        assertEquals(ProfileType.values()[0], profile.getType());
+        assertEquals(ProfileType.ADMIN, profile.getType());
     }
 }

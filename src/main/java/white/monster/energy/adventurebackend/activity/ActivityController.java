@@ -1,13 +1,17 @@
 package white.monster.energy.adventurebackend.activity;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import white.monster.energy.adventurebackend.profile.ProfileType;
 
 import java.util.List;
 
 /** REST controller for managing Activity entities. */
+@CrossOrigin
 @RestController
-@RequestMapping("/api/activities")
+@RequestMapping("/api/activity")
 public class ActivityController {
 
     /** Service layer dependency for handling business logic related to activities. */
@@ -21,7 +25,8 @@ public class ActivityController {
 
     /** POST /api/activities: Creates a new Activity. */
     @PostMapping
-    public ResponseEntity<?> createActivity(@RequestBody Activity activity) {
+    public ResponseEntity<?> createActivity(@RequestBody Activity activity, HttpServletRequest request) {
+        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         try {
             // Call activityService to create the activity
             Activity saved = activityService.createActivity(activity);
@@ -53,7 +58,8 @@ public class ActivityController {
 
     /** PUT /api/activities/{id}: Updates an existing activity. */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateActivity(@PathVariable int id, @RequestBody Activity activity) {
+    public ResponseEntity<?> updateActivity(@PathVariable int id, @RequestBody Activity activity, HttpServletRequest request) {
+        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         try {
             // Call activityService to update the activity
             Activity updated = activityService.updateActivity(id, activity);
@@ -67,7 +73,8 @@ public class ActivityController {
 
     /** DELETE /api/activities/{id}: Deletes an activity by ID. */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteActivity(@PathVariable int id) {
+    public ResponseEntity<?> deleteActivity(@PathVariable int id, HttpServletRequest request) {
+        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         // Call activityService to delete the activity
         if (activityService.deleteActivity(id)) {
             // If deleted successfully, return HTTP 204 No Content
