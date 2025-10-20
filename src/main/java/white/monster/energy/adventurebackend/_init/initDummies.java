@@ -2,8 +2,6 @@ package white.monster.energy.adventurebackend._init;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import white.monster.energy.adventurebackend.activity.Activity;
 import white.monster.energy.adventurebackend.activity.ActivityService;
@@ -14,7 +12,6 @@ import white.monster.energy.adventurebackend.profile.Profile;
 import white.monster.energy.adventurebackend.profile.ProfileService;
 import white.monster.energy.adventurebackend.profile.ProfileType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -34,10 +31,11 @@ public class initDummies
 
     private void populateProfiles()
     {
-        profileService.createProfile(new Profile("admin", "admin", "tlfNumber", ProfileType.ADMIN));
+        profileService.createProfile(new Profile("admin", "tlfNumber", "admin", ProfileType.ADMIN));
         for (int i = 0; i < 8; i++)
         {
-            profileService.createProfile(new Profile(TestingSuite.getName(), "1234", TestingSuite.getPhoneNumber(), ProfileType.OPERATOR));
+            profileService.createProfile(new Profile(TestingSuite.getName(), TestingSuite.getPhoneNumber(), "1234",
+                                                     ProfileType.OPERATOR));
         }
     }
 
@@ -81,23 +79,24 @@ public class initDummies
     {
         List<Activity> activities = activityService.getAllActivities();
 
+        Profile profile;
         Booking booking;
         BookedActivity activity;
 
-        Profile profile;
-
         for (int i = 0; i < 10; i++)
         {
-            profile = new Profile(TestingSuite.getName(), TestingSuite.getPhoneNumber());
-            booking = new Booking();
+            profile  = new Profile(TestingSuite.getName(), TestingSuite.getPhoneNumber());
+            booking  = new Booking();
             activity = new BookedActivity();
+
+            booking.setVisitor(profile);
+            booking.setParticipants(TestingSuite.getInt(1,20));
+            booking.setStartTime(TestingSuite.getTime());
+
+            booking.setBookedActivities(List.of(new BookedActivity[]{activity}));
 
             activity.setBooking(booking);
             activity.setActivity(TestingSuite.oneOf(activities));
-
-            booking.setBookedActivities(List.of(new BookedActivity[]{activity}));
-            booking.setVisitor(profile);
-            booking.setStartTime(TestingSuite.getTime());
 
             bookingService.create(booking);
         }

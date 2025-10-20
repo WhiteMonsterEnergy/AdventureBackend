@@ -1,12 +1,15 @@
 package white.monster.energy.adventurebackend.booking;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import white.monster.energy.adventurebackend.profile.ProfileType;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -14,9 +17,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/bookings")
-@CrossOrigin
 public class BookingController {
 
     private final BookingService service;
@@ -33,8 +36,11 @@ public class BookingController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
             @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
+            HttpServletRequest request
     ) {
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return Page.empty();
+
         Pageable pageable = PageRequest.of(page, size);
 
         List<Booking> data;
@@ -59,7 +65,9 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingDto> get(@PathVariable int id) {
+    public ResponseEntity<BookingDto> get(@PathVariable int id, HttpServletRequest request) {
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
         Booking b = service.getById(id);
         return (b == null) ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(BookingDto.from(b));
@@ -87,14 +95,16 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BookingDto> update(@PathVariable int id, @RequestBody BookingDto dto) {
+    public ResponseEntity<BookingDto> update(@PathVariable int id, @RequestBody BookingDto dto, HttpServletRequest request) {
+        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         Booking updated = service.update(id, dto);
         return (updated == null) ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(BookingDto.from(updated));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id, HttpServletRequest request) {
+        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         boolean ok = service.delete(id);
         return ok ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
@@ -102,7 +112,9 @@ public class BookingController {
     @PostMapping("/assign-employee")
     public ResponseEntity<?> assignEmployee(
             @RequestParam int bookingId,
-            @RequestParam int employeeId) {
+            @RequestParam int employeeId,
+            HttpServletRequest request) {
+        if (ProfileType.ADMIN.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         try {
             Booking updated = service.assignEmployee(bookingId, employeeId);
             return ResponseEntity.ok(BookingDto.from(updated));
@@ -112,7 +124,8 @@ public class BookingController {
     }
 
     @GetMapping("/assigned-to/{employeeId}")
-    public ResponseEntity<List<BookingDto>> getBookingsForEmployee(@PathVariable int employeeId) {
+    public ResponseEntity<List<BookingDto>> getBookingsForEmployee(@PathVariable int employeeId, HttpServletRequest request) {
+        if (ProfileType.OPERATOR.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         List<Booking> bookings = service.getBookingsForEmployee(employeeId);
         List<BookingDto> dtos = bookings.stream()
                 .map(BookingDto::from)

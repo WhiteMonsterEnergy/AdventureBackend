@@ -20,8 +20,7 @@ public class ProfileControllerTest {
         // Arrange: Set up mocks and test data
         ProfileService profileService = mock(ProfileService.class);
         BookingService bookingService = mock(BookingService.class);
-        BookingAccessRepository bookingAccessRepository = mock(BookingAccessRepository.class);
-        ProfileController controller = new ProfileController(profileService, bookingService, bookingAccessRepository);
+        ProfileController controller = new ProfileController(profileService);
 
         // Input profile for login
         Profile inputProfile = new Profile();
@@ -60,8 +59,7 @@ public class ProfileControllerTest {
         // Arrange: Set up mocks and test data
         ProfileService profileService = mock(ProfileService.class);
         BookingService bookingService = mock(BookingService.class);
-        BookingAccessRepository bookingAccessRepository = mock(BookingAccessRepository.class);
-        ProfileController controller = new ProfileController(profileService, bookingService, bookingAccessRepository);
+        ProfileController controller = new ProfileController(profileService);
 
         // Input profile with incorrect credentials
         Profile inputProfile = new Profile();

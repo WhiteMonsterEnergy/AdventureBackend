@@ -6,10 +6,11 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import white.monster.energy.adventurebackend.booking.*;
-import white.monster.energy.adventurebackend.employee.EmployeeRepository;
+import white.monster.energy.adventurebackend.profile.Profile;
 import white.monster.energy.adventurebackend.profile.ProfileRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,10 +53,11 @@ public class BookingServiceTest {
     void testCreateBooking() {
         // Arrange: Build a new Booking object
         Booking booking = Booking.builder()
-                .type("ACTIVITY")
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusHours(1))
+                .visitor(new Profile("name", "contact"))
                 .participants(1)
+                .type("DRAFT")
+                .startTime(LocalDateTime.now())
+                .bookedActivities(new ArrayList<>())
                 .build();
 
         // Act: Create the booking
@@ -63,7 +65,7 @@ public class BookingServiceTest {
 
         // Assert: Verify the booking was created with expected status
         assertNotNull(created);
-        assertEquals("DRAFT", created.getStatus());
+        assertEquals("DRAFT", created.getType());
     }
 
     /** Test retrieving a booking by its ID */

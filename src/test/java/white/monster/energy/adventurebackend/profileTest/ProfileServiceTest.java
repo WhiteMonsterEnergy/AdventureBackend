@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import white.monster.energy.adventurebackend.employee.Employee;
-import white.monster.energy.adventurebackend.employee.EmployeeRepository;
 import white.monster.energy.adventurebackend.profile.*;
 
 import java.util.Optional;
@@ -22,8 +20,6 @@ public class ProfileServiceTest {
     // Mocks for dependencies
     @Mock
     private ProfileRepository profileRepository;
-    @Mock
-    private EmployeeRepository employeeRepository;
 
     // Class under test
     @InjectMocks
@@ -33,12 +29,12 @@ public class ProfileServiceTest {
     @Test
     void testAuthenticateAndGetProfile_Success() {
         // Arrange: Set up mock behavior
-        Profile profile = new Profile(1, "Alice", "secret", ProfileType.ADMIN);
+        Profile profile = new Profile("Alice", "phNumber", "password", ProfileType.ADMIN);
         // Mock repository to return the profile when searched by name
         when(profileRepository.findByName("Alice")).thenReturn(Optional.of(profile));
 
         // Act: Call the method under test
-        Profile result = profileService.authenticateAndGetProfile("Alice", "secret");
+        Profile result = profileService.authenticateAndGetProfile("Alice", "password");
 
         // Assert: Verify the results
         // The returned profile should not be null
@@ -66,7 +62,7 @@ public class ProfileServiceTest {
     @Test
     void testGetProfileById_Found() {
         // Arrange: Mock repository to return a profile for ID 2
-        Profile profile = new Profile(2, "Eve", "pass", ProfileType.OPERATOR);
+        Profile profile = new Profile("Eve", "pass"); profile.setId(2);
         // Mock repository to return the profile when searched by ID
         when(profileRepository.findById(2)).thenReturn(Optional.of(profile));
 
@@ -96,8 +92,8 @@ public class ProfileServiceTest {
     @Test
     void testGetAllProfiles() {
         // Arrange: Mock repository to return a list of profiles
-        Profile p1 = new Profile(1, "A", "p1", ProfileType.ADMIN);
-        Profile p2 = new Profile(2, "B", "p2", ProfileType.OPERATOR);
+        Profile p1 = new Profile("name1", "phNumber1", "password1", ProfileType.ADMIN);
+        Profile p2 = new Profile("name2", "phNumber2", "password2", ProfileType.OPERATOR);
         when(profileRepository.findAll()).thenReturn(List.of(p1, p2));
 
         // Act: Call the method to get all profiles
@@ -111,7 +107,7 @@ public class ProfileServiceTest {
     @Test
     void testUpdateProfile() {
         // Arrange: Create a profile to update
-        Profile profile = new Profile(3, "C", "old", ProfileType.OPERATOR);
+        Profile profile = new Profile("name",  "phNumber");
 
         // Act: Call the method to update the profile
         profileService.updateProfile(profile);
@@ -124,13 +120,11 @@ public class ProfileServiceTest {
     @Test
     void testCreateProfile() {
         // Arrange: Create a new profile
-        Profile profile = new Profile(0, "D", "new", ProfileType.ADMIN);
+        Profile profile = new Profile("name", "phNumber");
 
         // Act: Call the method to create the profile
         profileService.createProfile(profile);
 
-        // Assert: EmployeeRepository's save method should be called with any Employee instance
-        verify(employeeRepository).save(any(Employee.class));
         // ProfileRepository's save method should be called with the provided profile
         verify(profileRepository).save(profile);
 
