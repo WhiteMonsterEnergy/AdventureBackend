@@ -41,36 +41,37 @@ public class initDummies
 
     private void populateActivities()
     {
-        saveActivity("Stangspring");
-        saveActivity("Minigolf");
-        saveActivity("Escape Room");
-        saveActivity("Bowling");
-        saveActivity("Laser Tag");
-        saveActivity("Skattejagt");
-        saveActivity("Dykker Udflugt");
-        saveActivity("Bungee Jump");
-        saveActivity("Bjerg Klatring");
-        saveActivity("Klatre Skov");
-        saveActivity("Gokarts");
-        saveActivity("Paintball");
-        saveActivity("Demolition Derby");
-        saveActivity("Bueskydning");
-        saveActivity("Fodbold");
-        saveActivity("Boksning");
-        saveActivity("Gabestok");
-        saveActivity("Faldskærms Udspring");
-        saveActivity("Kano Udflugt");
-        saveActivity("Kølhaling");
+        saveActivity("Stangspring", "Spring så højt du kan og nå stangen!");
+        saveActivity("Minigolf"," Spil en runde minigolf med vennerne.");
+        saveActivity("Escape Room"," Løs gåder og find vej ud af det låste rum.");
+        saveActivity("Bowling", "Kast kuglen og slå keglerne ned.");
+        saveActivity("Laser Tag", "Kæmp mod dine venner i en futuristisk kamp.");
+        saveActivity("Skattejagt", "Find skjulte skatte i et spændende eventyr.");
+        saveActivity("Dykker Udflugt", "Udforsk undervandsverdenen med dykning.");
+        saveActivity("Bungee Jump", "Hop fra en høj bro med elastiksnor.");
+        saveActivity("Bjerg Klatring", "Bestig udfordrende bjergvægge.");
+        saveActivity("Klatre Skov", "Naviger gennem trætoppene i en klatreskov.");
+        saveActivity("Gokarts", "Kør hurtige gokarts på en spændende bane.");
+        saveActivity("Paintball", "Deltag i en actionfyldt paintball kamp.");
+        saveActivity("Demolition Derby", "Kør biler og ødelæg modstandernes køretøjer.");
+        saveActivity("Bueskydning", "Test din præcision med bue og pil.");
+        saveActivity("Fodbold", "Spil en kamp fodbold med vennerne.");
+        saveActivity("Boksning", "Træn og kæmp i ringen.");
+        saveActivity("Gabestok", "Prøv den gamle strafmetode i gabestokken.");
+        saveActivity("Faldskærms Udspring", "Spring ud fra et fly med faldskærm.");
+        saveActivity("Kano Udflugt", "Padl ned ad floden i en kano.");
+        saveActivity("Kølhaling", "Oplev den gamle sømandsstraf kølhaling.");
     }
 
-    private void saveActivity(String title)
+    private void saveActivity(String title, String description)
     {
         Activity activity = new Activity();
-        activity.setCapacity(5);
-        activity.setPrice(150);
-        activity.setFixedTime(30);
-        activity.setAgeLimit(0);
+        activity.setCapacity(TestingSuite.getInt(1,20));
+        activity.setPrice(TestingSuite.getInt(110,500));
+        activity.setFixedTime(TestingSuite.getInt(60,240));
+        activity.setAgeLimit(TestingSuite.getInt(1,18));
         activity.setTitle(title);
+        activity.setDescription(description);
 
         activityService.createActivity(activity);
     }
