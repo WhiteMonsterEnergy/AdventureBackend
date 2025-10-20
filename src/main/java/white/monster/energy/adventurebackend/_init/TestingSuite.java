@@ -44,6 +44,7 @@ public final class TestingSuite
     public static double  getDouble(double min, double max) {return rand.nextDouble(min, max);}
     public static boolean chance   (double percent)         {return percent > rand.nextDouble()*100;}
 
+    public static <T> T oneOf(T ... objects) {return oneOf(List.of(objects));}
     public static <T> T oneOf(List<T> objects)
     {
         if (objects.isEmpty()) return null;
