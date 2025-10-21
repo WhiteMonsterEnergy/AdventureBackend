@@ -17,4 +17,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Integer> {
     // counts profiles with correct type, used for limiting booking of activities to correct profile types
     long countByType(ProfileType type);
 
+    Optional<Profile> findByNameAndContactInfo(String name, String contactInfo);
+    default Optional<Profile> findByNameAndContactInfo(Profile profile)
+    {return findByNameAndContactInfo(profile.getName(), profile.getContactInfo());}
 }

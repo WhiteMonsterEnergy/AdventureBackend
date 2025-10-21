@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import white.monster.energy.adventurebackend.bookedActivities.BookedActivity;
 import white.monster.energy.adventurebackend.profile.Profile;
 import white.monster.energy.adventurebackend.profile.ProfileRepository;
+import white.monster.energy.adventurebackend.profile.ProfileService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,13 +19,15 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final ProfileRepository profileRepository;
+    private final ProfileService    profileService;
 
     // Saves a new booking to the database.
     public Booking create(Booking booking)
     {
         // establish data in database in correct order to ensure proper foreign-keying
         booking.setId(bookingRepository.save(new Booking()).getId()); // "reserve" spot in database for bookedActivities to reference
-        booking.getVisitor().setId(profileRepository.save(booking.getVisitor()).getId()); // todo, get if existing
+        booking.getVisitor().setId(profileService.createProfile(booking.getVisitor()).getId()); // todo, get if existing
+        booking.getBookedActivities().forEach(bookedActivity -> bookedActivity.setBooking(booking));
 
         return bookingRepository.save(booking);
     }

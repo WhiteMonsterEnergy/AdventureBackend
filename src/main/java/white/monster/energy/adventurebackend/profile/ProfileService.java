@@ -24,6 +24,7 @@ public class ProfileService {
 
     // creates a profile and links to an employee if profile type is OPERATOR or ADMIN
     public Profile createProfile(Profile profile) {
+        if (profileRepository.findByNameAndContactInfo(profile).isPresent()) return profile;
         return profileRepository.save(profile);
     }
 
