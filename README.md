@@ -90,13 +90,13 @@ white.monster.energy.adventurebackend/
 │       │           │   ├── BookingServiceTest.java
 │       │           │   └── BookingTest.java
 │       │           │
-│       │           ├── profileTest/
-│       │           │   ├── ProfileControllerTest.java
-│       │           │   ├── ProfileRepositoryTest.java
-│       │           │   ├── ProfileServiceTest.java
-│       │           │   ├── ProfileTypeTest.java
-│       │           │   └── ProfileTest.java
+│       │           └── profileTest/
+│       │               ├── ProfileControllerTest.java
+│       │               ├── ProfileRepositoryTest.java
+│       │               ├── ProfileServiceTest.java
+│       │               ├── ProfileTypeTest.java
+│       │               └── ProfileTest.java
 │       |
-|       └── resources
+|       └── resources/
 |               └── application-test.properties     
 └── pom.xml
