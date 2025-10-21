@@ -83,7 +83,7 @@ public class BookedActivityController {
     public ResponseEntity<?> getAllAssignments(@RequestParam int adminProfileId) {
         try {
             Profile admin = profileRepository.findById(adminProfileId)
-                    .orElseThrow(() -> new IllegalArgumentException("Admin profile not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Admin profile not found"));
             List<BookedActivity> all = service.getAllAssignedActivities(admin);
             return ResponseEntity.ok(all);
         } catch (IllegalStateException | IllegalArgumentException e) {
@@ -122,12 +122,12 @@ public class BookedActivityController {
              @RequestParam int activityId,
              @RequestParam
              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-             java.time.LocalDateTime start) {
+             LocalDateTime start) {
         try {
             BookedActivity ba = service.scheduleActivity(bookingId, activityId, start);
             return org.springframework.http.ResponseEntity.ok(new BookedActivityDto(ba.getId(), bookingId, activityId));
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @GetMapping("/availability")
@@ -139,9 +139,9 @@ public class BookedActivityController {
             @RequestParam(defaultValue = "1440") int horizonMinutes) {
         try {
             java.time.LocalDateTime start = service.findFirstAvailableStart(activityId, from, horizonMinutes);
-            return org.springframework.http.ResponseEntity.ok(start);
+            return ResponseEntity.ok(start);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

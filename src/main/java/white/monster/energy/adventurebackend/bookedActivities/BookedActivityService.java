@@ -154,8 +154,8 @@ if (operator.getType() != ProfileType.OPERATOR) {
         var activity = activityRepo.findById(activityId)
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found"));
 
-        java.time.LocalDateTime cursor = from;
-        java.time.LocalDateTime limit  = from.plusMinutes(Math.max(searchHorizonMinutes, 1));
+        LocalDateTime cursor = from;
+        LocalDateTime limit  = from.plusMinutes(Math.max(searchHorizonMinutes, 1));
 
         while (!cursor.isAfter(limit)) {
             java.time.LocalDateTime end = computeEnd(activity, cursor);
@@ -173,14 +173,14 @@ if (operator.getType() != ProfileType.OPERATOR) {
     public BookedActivity scheduleActivity(
             int bookingId,
             int activityId,
-            java.time.LocalDateTime start) {
+            LocalDateTime start) {
         var booking  = bookingService.getById(bookingId);
         if (booking == null) throw new IllegalArgumentException("Booking not found");
 
         var activity = activityRepo.findById(activityId)
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found"));
 
-        java.time.LocalDateTime end = computeEnd(activity, start);
+        LocalDateTime end = computeEnd(activity, start);
         assertActivitySlotFree(activityId, start, end);
         assertOperatorCapacity(start, end);
 
