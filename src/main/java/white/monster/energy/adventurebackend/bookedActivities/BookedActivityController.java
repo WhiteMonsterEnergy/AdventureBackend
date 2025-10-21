@@ -118,8 +118,7 @@ public class BookedActivityController
     public ResponseEntity<?>  assignOperator(
             @RequestParam int bookedActivityId,
             @RequestParam int operatorProfileId,
-            @RequestParam String profileName,
-            HttpServletRequest request)
+            @RequestParam String profileName, HttpServletRequest request)
     {
         if (ProfileType.OPERATOR.verifyAccessLevel(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
@@ -137,13 +136,13 @@ public class BookedActivityController
              @RequestParam int activityId,
              @RequestParam
              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-             java.time.LocalDateTime start)
+             LocalDateTime start)
     {
         try {
             BookedActivity ba = service.scheduleActivity(bookingId, activityId, start);
-            return org.springframework.http.ResponseEntity.ok(new BookedActivityDto(ba.getId(), bookingId, activityId));
+            return ResponseEntity.ok(new BookedActivityDto(ba.getId(), bookingId, activityId));
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -152,14 +151,13 @@ public class BookedActivityController
             @RequestParam int activityId,
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            java.time.LocalDateTime from,
-            @RequestParam(defaultValue = "1440") int horizonMinutes)
+            LocalDateTime from, @RequestParam(defaultValue = "1440") int horizonMinutes)
     {
         try {
-            java.time.LocalDateTime start = service.findFirstAvailableStart(activityId, from, horizonMinutes);
-            return org.springframework.http.ResponseEntity.ok(start);
+            LocalDateTime start = service.findFirstAvailableStart(activityId, from, horizonMinutes);
+            return ResponseEntity.ok(start);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            return org.springframework.http.ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

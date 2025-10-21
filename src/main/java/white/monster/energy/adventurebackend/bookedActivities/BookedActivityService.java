@@ -175,7 +175,7 @@ if (operator.getType() != ProfileType.OPERATOR) {
         var activity = activityRepo.findById(activityId)
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found"));
 
-        java.time.LocalDateTime end = computeEnd(activity, start);
+        LocalDateTime end = computeEnd(activity, start);
         assertActivitySlotFree(activityId, start, end);
         assertOperatorCapacity(start, end);
 
