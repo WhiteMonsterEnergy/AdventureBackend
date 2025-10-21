@@ -125,7 +125,7 @@ if (operator.getType() != ProfileType.OPERATOR) {
         return repo.findByAssignedOperator(operator);
     }
     private java.time.LocalDateTime computeEnd(
-            white.monster.energy.adventurebackend.activity.Activity a, java.time.LocalDateTime start) {
+            white.monster.energy.adventurebackend.activity.Activity a, LocalDateTime start) {
         int minutes = Math.max(a.getMinimumMinutes(), 0);
         return start.plusMinutes(minutes);
     }

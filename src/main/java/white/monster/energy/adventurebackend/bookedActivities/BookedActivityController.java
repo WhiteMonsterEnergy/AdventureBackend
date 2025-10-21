@@ -131,7 +131,7 @@ public class BookedActivityController
     }
 
     @PostMapping("/schedule")
-    public org.springframework.http.ResponseEntity<?> schedule
+    public ResponseEntity<?> schedule
             (@RequestParam int bookingId,
              @RequestParam int activityId,
              @RequestParam
@@ -147,7 +147,7 @@ public class BookedActivityController
     }
 
     @GetMapping("/availability")
-    public org.springframework.http.ResponseEntity<?> availability(
+    public ResponseEntity<?> availability(
             @RequestParam int activityId,
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
