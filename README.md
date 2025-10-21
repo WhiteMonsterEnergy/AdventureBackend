@@ -6,52 +6,62 @@
 
 ## 🌐 Features
 
-- Manage activity schedules, reservations, and equipment  
-- Handle individual and company reservations  
-- Enforce age restrictions and activity rules  
-- Employee role management (Reservation Managers & Activity Managers)  
+
+- Manage activity schedules and participant profiles  
+- Handle both individual and company reservations  
+- Enforce age restrictions and activity-specific rules  
+- Employee management with roles (Manager, Operator)  
 - Secure authentication and role-based access control  
-- Track reservation history and equipment status  
+- Reservation history tracking (and future equipment status) 
 
 ---
 
 ## 🧱 Technologies
 
 - **Backend:** Java 21, Spring Boot, JDBC  
-- **Database:** MySQL (production), H2 In-Memory Database (testing)  
-- **Cloud Integration:** Azure for deployment and storage  
+- **Database (Production):** MySQL (via Docker)  
+- **Database (Testing):** H2 In-Memory Database  
+- **Cloud Integration:** Azure (for deployment)  
 - **Build Tool:** Maven  
-- **API:** REST endpoints for frontend communication  
+- **API:** REST (JSON)  
+- **Containerization:** Docker & Docker Compose  
+- **CI/CD:** GitHub Actions (Build → Test → Deploy)
 
 ---
 
-## 📁 Project Structure (Backend) 🚧
+## 📁 Project Structure (Backend)
 
 ```plaintext
-adventurexp-backend/
+white.monster.energy.adventurebackend/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com/adventurexp/
+│   │   │   └── white.monster.energy.adventurebackend/
 │   │   │       ├── activity/
-│   │   │       │   ├── IActivity.java
-│   │   │       │   └── Activity.java
+│   │   │       │   ├── Activity.java
+│   │   │       │   ├── ActivityController.java
+│   │   │       │   ├── ActivityRepository.java
+│   │   │       │   └── ActivityService.java
 │   │   │       │
-│   │   │       ├── reservation/
-│   │   │       │   ├── IReservation.java
-│   │   │       │   └── Reservation.java
+│   │   │       ├── bookedActivities/
+│   │   │       │   ├── BookedActivity.java
+│   │   │       │   ├── BookedActivityController.java
+│   │   │       │   ├── BookedActivityRepository.java
+│   │   │       │   └── BookedActivityService.java
 │   │   │       │
-│   │   │       ├── equipment/
-│   │   │       │   ├── IEquipment.java
-│   │   │       │   └── Equipment.java
+│   │   │       ├── booking/
+│   │   │       │   ├── Booking.java
+│   │   │       │   ├── BookingController.java
+│   │   │       │   ├── BookingDto.java
+│   │   │       │   ├── BookingRepository.java
+│   │   │       │   └── BookingService.java
 │   │   │       │
-│   │   │       ├── employee/
-│   │   │       │   ├── IEmployee.java
-│   │   │       │   └── Employee.java
-│   │   │       │
-│   │   │       ├── security/
-│   │   │       │   ├── ISecuritySystem.java
-│   │   │       │   └── SecuritySystem.java
+│   │   │       ├── profile/
+│   │   │       │   ├── Profile.java
+│   │   │       │   ├── ProfileController.java
+│   │   │       │   ├── ProfileRepository.java
+│   │   │       │   ├── ProfileService.java
+│   │   │       │   └── ProfileType.java
 │   │   │       │
 │   │   │       └── AdventureXP.java              # Main application entry point
 │   │   │
@@ -60,4 +70,32 @@ adventurexp-backend/
 │   │
 │   └── test/
 │       └── java/
-│           └── com/adventurexptest/             # Unit and integration tests
+|       |     └── adventurebackendtest/             # Unit and integration tests
+│       │           ├── activityTest/
+│       │           │   ├── ActivityControllerTest.java
+│       │           │   ├── ActivityRepositoryTest.java
+│       │           │   ├── ActivityService.java
+│       │           │   └── ActivityTest.java
+│       │           │
+│       │           ├── bookedActivitiesTest/
+│       │           │   ├── BookedActivityControllerTest.java
+│       │           │   ├── BookedActivityRepositoryTest.java
+│       │           │   ├── BookedActivityServiceTest.java
+│       │           │   └── BookedActivityTest.java
+│       │           │
+│       │           ├── bookingTest/
+│       │           │   ├── BookingControllerTest.java
+│       │           │   ├── BookingDtoTest.java
+│       │           │   ├── BookingRepositoryTest.java
+│       │           │   ├── BookingServiceTest.java
+│       │           │   └── BookingTest.java
+│       │           │
+│       │           ├── profileTest/
+│       │           │   ├── ProfileControllerTest.java
+│       │           │   ├── ProfileRepositoryTest.java
+│       │           │   ├── ProfileServiceTest.java
+│       │           │   ├── ProfileTypeTest.java
+│       │           │   └── ProfileTest.java
+│       |
+|       └── resources
+               └── application-test.properties     
