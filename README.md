@@ -98,4 +98,5 @@ white.monster.energy.adventurebackend/
 │       │           │   └── ProfileTest.java
 │       |
 |       └── resources
-               └── application-test.properties     
+|               └── application-test.properties     
+└── pom.xml
